@@ -1,0 +1,5 @@
+com.liaoyun.common.web.config.CaptchaConfig
+com.liaoyun.common.web.config.FilterConfig
+com.liaoyun.common.web.config.I18nConfig
+com.liaoyun.common.web.config.ResourcesConfig
+com.liaoyun.common.web.config.UndertowConfig

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liaoyun.system.mapper.MesInventoryLedgerMapper">
+    <select id="callInOutProcedure" statementType="CALLABLE" resultType="map">
+        CALL sp_inout(
+            #{stockid, mode=IN, jdbcType=BIGINT},
+            #{count, mode=IN, jdbcType=INTEGER},
+            #{kwid, mode=IN, jdbcType=INTEGER},
+            #{tenantid, mode=IN, jdbcType=VARCHAR},
+            #{msg, mode=OUT, jdbcType=INTEGER}
+               )
+    </select>
+    <select id="getStockByProductId" resultType="int">
+        SELECT
+            SUM(i.quantity) AS stock
+        FROM mes_inventory_ledger i
+                 JOIN mes_stock b ON i.stockid = b.id
+        WHERE b.id = #{productId}
+    </select>
+</mapper>

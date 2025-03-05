@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>liaoyun-vue-plus</artifactId>
+        <groupId>com.liaoyun</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>liaoyun-common-bom</module>
+        <module>liaoyun-common-social</module>
+        <module>liaoyun-common-core</module>
+        <module>liaoyun-common-doc</module>
+        <module>liaoyun-common-excel</module>
+        <module>liaoyun-common-idempotent</module>
+        <module>liaoyun-common-job</module>
+        <module>liaoyun-common-log</module>
+        <module>liaoyun-common-mail</module>
+        <module>liaoyun-common-mybatis</module>
+        <module>liaoyun-common-oss</module>
+        <module>liaoyun-common-ratelimiter</module>
+        <module>liaoyun-common-redis</module>
+        <module>liaoyun-common-satoken</module>
+        <module>liaoyun-common-security</module>
+        <module>liaoyun-common-sms</module>
+        <module>liaoyun-common-web</module>
+        <module>liaoyun-common-translation</module>
+        <module>liaoyun-common-sensitive</module>
+        <module>liaoyun-common-json</module>
+        <module>liaoyun-common-encrypt</module>
+        <module>liaoyun-common-tenant</module>
+        <module>liaoyun-common-websocket</module>
+        <module>liaoyun-common-sse</module>
+    </modules>
+
+    <artifactId>liaoyun-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        common 通用模块
+    </description>
+
+</project>

@@ -1,0 +1,541 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^tm-(.*)": "@/tmui/components/tm-$1/tm-$1.vue"
+		},
+		"easycom": {
+		    "^w-(.*)": "@/uni_modules/wmf-code/components/w-$1/w-$1.vue"//二维码条形码的配置 如果是npm方式使用 @uni-ui/code-ui/components/w-$1/index.vue
+		}
+	},
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "主页",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "用户登录"
+			}
+		},
+		{
+			"path": "pages/user/index",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/workbench/index",
+			"style": {
+				"navigationBarTitleText": "工作台"
+			}
+		},
+		{
+			"path": "pages/user/userInfo",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/user/commonProblems",
+			"style": {
+				"navigationBarTitleText": "常见问题汇总"
+			}
+		},
+		{
+			"path": "pages/user/about",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
+			"path": "pages/user/Links",
+			"style": {
+				"navigationBarTitleText": "关联文档"
+			}
+		},
+		{
+			"path": "pages/user/userModify",
+			"style": {
+				"navigationBarTitleText": "信息修改",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/user/message",
+			"style": {
+				"navigationBarTitleText": "消息通知"
+			}
+		},
+		{
+			"path": "pages/user/userEditPassword",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/system/post/index",
+			"style": {
+				"navigationBarTitleText": "岗位管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/post/PostSubPage",
+			"style": {
+				"navigationBarTitleText": "岗位管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/monitor/logininfor/index",
+			"style": {
+				"navigationBarTitleText": "登录日志",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/client/index",
+			"style": {
+				"navigationBarTitleText": "客户端管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/index/list",
+			"style": {
+				"navigationBarTitleText": "工作信息",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stock/outstock/list",
+			"style": {
+				"navigationBarTitleText": "出库",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/order/detail",
+			"style": {
+				"navigationBarTitleText": "订单详情",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stock/instock/list",
+			"style": {
+				"navigationBarTitleText": "入库",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stock/outstock/saleout",
+			"style": {
+				"navigationBarTitleText": "销售出库",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stock/instock/outderin",
+			"style": {
+				"navigationBarTitleText": "委外入库",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/stock/outstock/outorder",
+			"style": {
+				"navigationBarTitleText": "委外出库",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/monitor/online/index",
+			"style": {
+				"navigationBarTitleText": "在线用户",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/user/index",
+			"style": {
+				"navigationBarTitleText": "用户管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/monitor/cache/index",
+			"style": {
+				"navigationBarTitleText": "缓存监控",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/monitor/operlog/index",
+			"style": {
+				"navigationBarTitleText": "操作日志",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/notice/index",
+			"style": {
+				"navigationBarTitleText": "通知公告",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/config/index",
+			"style": {
+				"navigationBarTitleText": "参数配置",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/config/ConfigSubPage",
+			"style": {
+				"navigationBarTitleText": "参数配置",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/notice/NoticeSubPage",
+			"style": {
+				"navigationBarTitleText": "通知公告预览",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/dict/index",
+			"style": {
+				"navigationBarTitleText": "字典管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/dict/DictTypeSubPage",
+			"style": {
+				"navigationBarTitleText": "字典子页面",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/system/dict/DictData",
+			"style": {
+				"navigationBarTitleText": "字典项管理",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/user/avatarUpload",
+			"style": {
+				"navigationBarTitleText": "头像上传"
+			}
+		},
+		{
+			"path": "pages/workbench/menuDispatcher",
+			"style": {
+				"navigationBarTitleText": "菜单跳转"
+			}
+		},
+		{
+			"path": "pages/test/index",
+			"style": {
+				"navigationBarTitleText": "测试页"
+			}
+		},
+		{
+			"path": "pages/make/index/index",
+			"style": {
+				"navigationBarTitleText": "报工"
+			}
+		},
+		{
+			"path": "pages/report/work/index",
+			"style": {
+				"navigationBarTitleText": "报工列表"
+			}
+		},
+		{
+			"path": "pages/stock/outstock/index",
+			"style": {
+				"navigationBarTitleText": "物料出库"
+			}
+		},
+		{
+			"path": "pages/quality/index",
+			"style": {
+				"navigationBarTitleText": "生产质检"
+			}
+		},
+		{
+			"path": "pages/quality/list",
+			"style": {
+				"navigationBarTitleText": "质检列表"
+			}
+		},
+		{
+			"path": "pages/quality/listmain",
+			"style": {
+				"navigationBarTitleText": "质检列表"
+			}
+		},
+		{
+			"path": "pages/make/scan/index",
+			"style": {
+				"navigationBarTitleText": "扫码报工"
+			}
+		},
+		{
+			"path": "pages/stock/procurement/index",
+			"style": {
+				"navigationBarTitleText": "采购计划"
+			}
+		},
+		{
+			"path": "pages/stock/instock/index",
+			"style": {
+				"navigationBarTitleText": "采购入库"
+			}
+		},
+		{
+			"path": "pages/stock/outstock/other",
+			"style": {
+				"navigationBarTitleText": "单独出库"
+			}
+		},
+		{
+			"path": "pages/outsoure/index",
+			"style": {
+				"navigationBarTitleText": "外协列表"
+			}
+		},
+		{
+			"path": "pages/equiment/index",
+			"style": {
+				"navigationBarTitleText": "设备点检"
+			}
+		},
+		{
+			"path": "pages/equiment/indexwb",
+			"style": {
+				"navigationBarTitleText": "设备维保"
+			}
+		},
+		{
+			"path": "pages/equiment/checkwb",
+			"style": {
+				"navigationBarTitleText": "设备维保"
+			}
+		},
+		{
+			"path": "pages/equiment/check",
+			"style": {
+				"navigationBarTitleText": "TMP"
+			}
+		},
+		{
+			"path": "pages/equiment/tool",
+			"style": {
+				"navigationBarTitleText": "工装夹具"
+			}
+		},
+		{
+			"path": "pages/tool/insert",
+			"style": {
+				"navigationBarTitleText": "工装夹具"
+			}
+		}
+		,
+		{
+			"path": "pages/cutting/tool",
+			"style": {
+				"navigationBarTitleText": "刀具管理"
+			}
+		},
+		{
+			"path": "pages/cutting/insert",
+			"style": {
+				"navigationBarTitleText": "刀具管理"
+			}
+		},
+		{
+			"path": "pages/stzp/index",
+			"style": {
+				"navigationBarTitleText": "装配任务"
+			}
+		},
+		{
+			"path": "pages/stzp/detail",
+			"style": {
+				"navigationBarTitleText": "装配详情"
+			}
+		},
+		{
+			"path": "pages/login/read",
+			"style": {
+				"navigationBarTitleText": "详情描述"
+			}
+		},
+		{
+			"path": "pages/seting/index",
+			"style": {
+				"navigationBarTitleText": "人员列表"
+			}
+		},
+		{
+			"path": "pages/quality/scan",
+			"style": {
+				"navigationBarTitleText": "扫码质检"
+			}
+		},
+		{
+			"path": "pages/seting/list",
+			"style": {
+				"navigationBarTitleText": "详细列表"
+			}
+		},
+		{
+			"path": "pages/stock/stocktaking/index",
+			"style": {
+				"navigationBarTitleText": "仓库盘点"
+			}
+		},
+		{
+			"path": "pages/stock/tbsk/index",
+			"style": {
+				"navigationBarTitleText": "调拨入库"
+			}
+		},
+		{
+			"path": "pages/stock/stockinfo/index",
+			"style": {
+				"navigationBarTitleText": "仓库信息"
+			}
+		},
+		{
+			"path": "pages/stock/stockinfo/list",
+			"style": {
+				"navigationBarTitleText": "仓库信息"
+			}
+		},
+		{
+			"path": "pages/stock/allrec/index",
+			"style": {
+				"navigationBarTitleText": "仓库信息"
+			}
+		},
+		{
+			"path": "pages/order/index",
+			"style": {
+				"navigationBarTitleText": "销售订单"
+			}
+		},{
+			"path": "pages/stock/stockinfo/warn",
+			"style": {
+				"navigationBarTitleText": "预警物料"
+			}
+		},{
+			"path": "pages/work/index",
+			"style": {
+				"navigationBarTitleText": "生产管理"
+			}
+		},{
+			"path": "pages/work/list",
+			"style": {
+				"navigationBarTitleText": "订单领料"
+			}
+		},{
+			"path": "pages/work/pri",
+			"style": {
+				"navigationBarTitleText": "打单列表"
+			}
+		},{
+			"path": "pages/work/workrec",
+			"style": {
+				"navigationBarTitleText": "报工审核"
+			}
+		},{
+			"path": "pages/stock/pristokck/index",
+			"style": {
+				"navigationBarTitleText": "入库打单"
+			}
+		},{
+			"path": "pages/stock/instock/check",
+			"style": {
+				"navigationBarTitleText": "半成品入库"
+			}
+		},{
+			"path": "pages/user/list",
+			"style": {
+				"navigationBarTitleText": "考勤列表"
+			}
+		},{
+			"path": "pages/user/kqinfo",
+			"style": {
+				"navigationBarTitleText": "考勤详细"
+			}
+		},{
+			"path": "pages/stock/outstock/bout",
+			"style": {
+				"navigationBarTitleText": "半成品出库"
+			}
+		},{
+			"path": "pages/stock/instock/done",
+			"style": {
+				"navigationBarTitleText": "成品入库"
+			}
+		},
+		{
+					"path": "uni_modules/uni-upgrade-center-app/pages/upgrade-popup",
+					"style": {
+						"disableScroll": true,
+						"app-plus": {
+							"backgroundColorTop": "transparent",
+							"background": "transparent",
+							"titleNView": false,
+							"scrollIndicator": false,
+							"popGesture": "none",
+							"animationType": "fade-in",
+							"animationDuration": 200
+		
+						}
+					}
+				}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#FFFFFF",
+		"app-plus": {
+			"scrollIndicator": "none"
+		}
+	},
+	"condition": {
+		"current": 0,
+		"list": [{
+			"name": "",
+			"path": "",
+			"query": ""
+		}]
+	},
+	"tabBar": {
+		"selectedColor": "red",
+		"list": [{
+				"pagePath": "pages/index/index"
+			},
+			{
+				"pagePath": "pages/user/index"
+			},
+			{
+				"pagePath": "pages/workbench/index"
+			}
+		]
+	}
+}

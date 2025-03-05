@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>liaoyun-vue-plus</artifactId>
+        <groupId>com.liaoyun</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>liaoyun-demo</module>
+        <module>liaoyun-generator</module>
+        <module>liaoyun-job</module>
+        <module>liaoyun-system</module>
+        <module>liaoyun-workflow</module>
+        <module>liaoyun-mes</module>
+    </modules>
+
+    <artifactId>liaoyun-modules</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        liaoyun-modules 业务模块
+    </description>
+
+</project>

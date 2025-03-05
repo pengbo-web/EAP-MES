@@ -1,0 +1,179 @@
+{
+    "name" : "了云制造",
+    "appid" : "__UNI__B928C70",
+    "description" : "了云线上管理",
+    "versionName" : "1.1.9",
+    "versionCode" : 119,
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "ignoreVersion" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {
+            "Canvas" : "nvue canvas",
+            "VideoPlayer" : {},
+            "Camera" : {},
+            "Barcode" : {},
+            "Webview-x5" : {},
+            "Bluetooth" : {}
+        },
+        "compatible" : {
+            "ignoreVersion" : true
+        },
+        "distribute" : {
+            "android" : {
+                "permissions" : [
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                ],
+                "minSdkVersion" : 21,
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
+                "targetSdkVersion" : 30
+            },
+            "ios" : {
+                "idfa" : false,
+                "dSYMs" : false,
+                "privacyDescription" : {
+                    "NSPhotoLibraryUsageDescription" : "上传质检信息、更改头像信息等模块手动选择上传相册内的照片需要读取相册内容，是否允许读取相册内容",
+                    "NSPhotoLibraryAddUsageDescription" : "下载图片需要保存到相册，是否允许保存照片到相册",
+                    "NSCameraUsageDescription" : "上传质检信息、更改头像信息等模块拍照上传照片需要使用摄像头，是否允许使用摄像头"
+                }
+            },
+            "sdkConfigs" : {
+                "ad" : {}
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "unpackage/res/icons/72x72.png",
+                    "xhdpi" : "unpackage/res/icons/96x96.png",
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
+                    "ipad" : {
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png"
+                    },
+                    "iphone" : {
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png"
+                    }
+                }
+            },
+            "splashscreen" : {
+                "useOriginalMsgbox" : true
+            }
+        },
+        "uniStatistics" : {
+            "enable" : false
+        },
+        "nativePlugins" : {
+            "QsDeviceSDK" : {
+                "appid" : "",
+                "__plugin_info__" : {
+                    "name" : "群索科技设备SDK",
+                    "description" : "群索产品打印扫码SDK",
+                    "platforms" : "Android",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {
+                        "appid" : {
+                            "des" : "",
+                            "key" : "AndroidManifest.xml中添加meta-data节点！对应android:name属性值, 如GETUI_APPID",
+                            "value" : ""
+                        }
+                    }
+                }
+            },
+            "Ba-Scanner" : {
+                "__plugin_info__" : {
+                    "name" : "扫码原生插件 - 新（连续扫码、设置格式、任意自定义界面）Ba-Scanner",
+                    "description" : "Ba-Scanner 是一款毫秒级扫码插件，采用Google MLKit。支持连续扫码，持续万次不卡顿；支持自定义任意界面、任意点击事件、权限说明；支持多码、相册、闪光灯、焦距缩放、提示音、震动等等。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=9669",
+                    "android_package_name" : "com.liaosaas",
+                    "ios_bundle_id" : "com.liaosaas",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "9669",
+                    "parameters" : {}
+                }
+            }
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "",
+        "darkmode" : true,
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : true,
+            "minified" : true
+        },
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "uniStatistics" : {
+        "enable" : false,
+        "version" : "2"
+    },
+    "vueVersion" : "3",
+    "h5" : {
+        "uniStatistics" : {
+            "enable" : false
+        },
+        "title" : "Liao云制造",
+        "router" : {
+            "mode" : "hash",
+            "base" : "/"
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        },
+        "devServer" : {
+            "https" : false
+        }
+    }
+}

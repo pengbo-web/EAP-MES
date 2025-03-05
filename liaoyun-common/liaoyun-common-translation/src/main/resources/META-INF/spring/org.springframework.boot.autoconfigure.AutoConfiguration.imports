@@ -1,0 +1,6 @@
+com.liaoyun.common.translation.config.TranslationConfig
+com.liaoyun.common.translation.core.impl.DeptNameTranslationImpl
+com.liaoyun.common.translation.core.impl.DictTypeTranslationImpl
+com.liaoyun.common.translation.core.impl.OssUrlTranslationImpl
+com.liaoyun.common.translation.core.impl.UserNameTranslationImpl
+com.liaoyun.common.translation.core.impl.NicknameTranslationImpl

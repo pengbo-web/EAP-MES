@@ -1,0 +1,119 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+import { cloneDeep } from '@vben/utils';
+import {
+  InputSearch,
+  Form,
+  FormItem,
+  Modal,
+  InputNumber,
+  Input,
+} from 'ant-design-vue';
+import { useVbenForm } from '#/adapter/form';
+import {
+  procurementplanAdd,
+  procurementplanInfo,
+  procurementplanUpdate,
+} from '#/api/mes/procurementplan';
+
+import { modalSchema } from './data';
+
+const emit = defineEmits<{ reload: [] }>();
+import Stocks from '#/views/mes/stock/listsc.vue';
+const isUpdate = ref(false);
+const title = computed(() => {
+  return isUpdate.value ? $t('pages.common.edit') : $t('pages.common.add');
+});
+
+const [BasicForm, formApi] = useVbenForm({
+  commonConfig: {
+    // 默认占满两列
+    formItemClass: 'col-span-2',
+    // 默认label宽度 px
+    labelWidth: 80,
+    // 通用配置项 会影响到所有表单项
+    componentProps: {
+      class: 'w-full',
+    },
+  },
+  schema: modalSchema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
+
+const [BasicModal, modalApi] = useVbenModal({
+  fullscreenButton: false,
+  onCancel: handleCancel,
+  onConfirm: handleConfirm,
+  onOpenChange: async (isOpen) => {
+    if (!isOpen) {
+      return null;
+    }
+    modalApi.modalLoading(true);
+
+    const { id } = modalApi.getData() as { id?: number | string };
+    isUpdate.value = !!id;
+
+    if (isUpdate.value && id) {
+      const record = await procurementplanInfo(id);
+      await formApi.setValues(record);
+    }
+
+    modalApi.modalLoading(false);
+  },
+});
+
+async function handleConfirm() {
+  try {
+    modalApi.modalLoading(true);
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    // getValues获取为一个readonly的对象 需要修改必须先深拷贝一次
+    const data = cloneDeep(await formApi.getValues());
+    await (isUpdate.value
+      ? procurementplanUpdate(data)
+      : procurementplanAdd(data));
+    emit('reload');
+    await handleCancel();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    modalApi.modalLoading(false);
+  }
+}
+
+async function handleCancel() {
+  modalApi.close();
+  await formApi.resetForm();
+}
+const custref = ref<any>({});
+const open = ref<boolean>(false);
+function handleSearch() {
+  open.value = true;
+}
+function handleChildEvent() {
+  const record = custref.value.rowinfo;
+  formApi.setFieldValue('proname', record.tilte),
+    formApi.setFieldValue('fromtype', '单独采购'),
+    formApi.setFieldValue('proId', record.id),
+    (open.value = false);
+}
+</script>
+
+<template>
+  <BasicModal :close-on-click-modal="false" :title="title" class="w-[550px]">
+    <BasicForm>
+      <template #proname="slotProps">
+        <InputSearch v-bind="slotProps" @search="handleSearch" />
+      </template>
+    </BasicForm>
+    <Modal v-model:open="open" width="100%" wrap-class-name="full-modal">
+      <Stocks ref="custref" @child-event="handleChildEvent" />
+    </Modal>
+  </BasicModal>
+</template>
