@@ -4,6 +4,7 @@
 体验体制：
 > >官方前端项目地址: [Liaoyun](http://liao.llcoms.com/tenant/tenant)<br>
 > admin/admin123
+<br>感谢Tom-Mes对于开源的支持。
 
 > 成员前端项目地址: 基于vben5 [ruoyi-plus-vben5](https://gitee.com/dapppp/ruoyi-plus-vben5)
 >了云制造，开源版本，包含功能模块：
@@ -39,12 +40,9 @@
 
 ![Plus部署架构图](https://foruda.gitee.com/images/1678981882624240692/ae2a3f3e_1766278.png "Plus部署架构图.png")
 
-## 如何参与贡献
-
-[参与贡献的方式 https://plus-doc.dromara.org/#/common/contribution](https://plus-doc.dromara.org/#/common/contribution)
 
 ## 捐献作者
-作者为兼职做开源,平时还需要工作,如果帮到了您可以请作者吃个盒饭  
+2498828866
 <img src="https://images.llcoms.com/base/WechatIMG31304.jpg" width="300px" height="450px" />
 <img src="https://images.llcoms.com/base/WechatIMG31305.jpg" width="300px" height="450px" />
 
