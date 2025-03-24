@@ -4,7 +4,8 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
-
+/ruoyi-plus-miniapp-main/
+/ruoyi-plus-vben5-main/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
