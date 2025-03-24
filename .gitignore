@@ -6,6 +6,7 @@
 !gradle/wrapper/gradle-wrapper.jar
 /ruoyi-plus-miniapp-main/
 /ruoyi-plus-vben5-main/
+logs/
 zs.p12
 证书.p12
 upload_certificate.pem
