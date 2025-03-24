@@ -113,13 +113,14 @@ async function handleSubmit() {
       taskVariables,
       variables,
     } as CompleteTaskReqData;
+    console.log(requestData)
     await completeTask(requestData);
     modalApi.close();
     emit('complete');
   } catch (error) {
     console.error(error);
   } finally {
-    modalApi.modalLoading(false);
+    // modalApi.modalLoading(false);
   }
 }
 </script>

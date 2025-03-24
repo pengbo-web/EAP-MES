@@ -95,6 +95,13 @@ spring:
     deserialization:
       # 允许对象忽略json中不存在的属性
       fail_on_unknown_properties: false
+  ai:
+    openai:
+      api-key: sk-2625f7fcb92c4a8ea688bf78a600c907
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
 
 # Sa-Token配置
 sa-token:

@@ -34,7 +34,6 @@ public class MesOrderVo implements Serializable {
     /**
      * 主键
      */
-    @ExcelProperty(value = "主键")
     private Long id;
 
     /**
@@ -46,7 +45,7 @@ public class MesOrderVo implements Serializable {
     /**
      * 客户
      */
-    @ExcelProperty(value = "客户")
+
     private Long custid;
 
     /**
@@ -70,9 +69,11 @@ public class MesOrderVo implements Serializable {
     /**
      * 物料信息
      */
-    @ExcelProperty(value = "物料信息")
+
     private String stids;
 
+    @ExcelProperty(value = "物料信息")
+    private String stunames;
     /**
      * 发票管理
      */
@@ -106,7 +107,7 @@ public class MesOrderVo implements Serializable {
     /**
      * 角色状态（0正常 1停用）
      */
-    @ExcelProperty(value = "角色状态", converter = ExcelDictConvert.class)
+    @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "0=正常,1=停用")
     private String status;
 
@@ -120,6 +121,7 @@ public class MesOrderVo implements Serializable {
     @ExcelProperty(value = "备注")
     private String remark;
 
+    @ExcelProperty(value = "交货时间")
     private String custname;
 
     private List<MesOrderDeVo> orderList;

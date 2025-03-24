@@ -7,6 +7,9 @@ import com.liaoyun.common.mybatis.core.page.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.liaoyun.common.satoken.utils.LoginHelper;
+import com.liaoyun.common.sse.dto.SseMessageDto;
+import com.liaoyun.common.sse.utils.SseMessageUtils;
 import com.liaoyun.mes.domain.MesAllrec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ import com.liaoyun.mes.service.IMesOrderDeService;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 订单详情Service业务层处理
@@ -31,6 +36,7 @@ import java.util.Collection;
 public class MesOrderDeServiceImpl implements IMesOrderDeService {
 
     private final MesOrderDeMapper baseMapper;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     /**
      * 查询订单详情
@@ -96,6 +102,13 @@ public class MesOrderDeServiceImpl implements IMesOrderDeService {
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            Long userId = LoginHelper.getUserId();
+            scheduledExecutorService.schedule(() -> {
+                SseMessageDto dto = new SseMessageDto();
+                dto.setMessage("有新订单！");
+                dto.setUserIds(List.of(userId));
+                SseMessageUtils.publishMessage(dto);
+            }, 5, TimeUnit.SECONDS);
         }
         return bo.getId();
     }

@@ -80,16 +80,35 @@ public class MesProcurementplanServiceImpl implements IMesProcurementplanService
         for (MesProcurementplanVo vo : result.getRecords()) {
             if(ObjectUtils.isNotNull(vo.getProId())){
                 //暂时这样处理后续删除
-                if(vo.getWorkId()==100){
-                    LambdaQueryWrapper<MesProduct> wrapper=new LambdaQueryWrapper<>();
-                    wrapper.eq(MesProduct::getStocks,vo.getProId());
-                    MesProduct product=productMapper.selectList(wrapper).get(0);
-                    vo.setProduct(product);
-                    MesStockVo stockVo=stockMapper.selectVoById(vo.getProId());
-                    vo.setStockVo(stockVo);
-                    try{
-                        vo.setMj(calculateVolume(stockVo.getGk()));
-                    }catch (Exception e){
+                if(null!=vo.getWorkId()){
+                    if(vo.getWorkId()==100){
+                        LambdaQueryWrapper<MesProduct> wrapper=new LambdaQueryWrapper<>();
+                        wrapper.eq(MesProduct::getStocks,vo.getProId());
+                        MesProduct product=productMapper.selectList(wrapper).get(0);
+                        vo.setProduct(product);
+                        MesStockVo stockVo=stockMapper.selectVoById(vo.getProId());
+                        vo.setStockVo(stockVo);
+                        try{
+                            vo.setMj(calculateAndPrintDimensions(stockVo.getGk()));
+                        }catch (Exception e){
+
+                        }
+
+                    }else{
+                        MesStockVo stockVo=stockMapper.selectVoById(vo.getProId());
+                        if(null!=stockVo){
+                            LambdaQueryWrapper<MesProduct> wrapper=new LambdaQueryWrapper<>();
+                            wrapper.eq(MesProduct::getStocks,stockVo.getId());
+                            MesProduct product=productMapper.selectList(wrapper).get(0);
+                            vo.setProduct(product);
+                            vo.setStockVo(stockVo);
+                        }else{
+                            MesProduct product=productMapper.selectById(vo.getProId());
+                            vo.setProduct(product);
+                            MesUnitmeasureVo p=unitmeasureMapper.selectVoById(product.getStockId());
+                            vo.getProduct().setStockname(p.getTitle());
+                            vo.setWorkVo(workMapper.selectVoById(vo.getWorkId()));
+                        }
 
                     }
 
@@ -108,10 +127,9 @@ public class MesProcurementplanServiceImpl implements IMesProcurementplanService
                         vo.getProduct().setStockname(p.getTitle());
                         vo.setWorkVo(workMapper.selectVoById(vo.getWorkId()));
                     }
-
+                }
                 }
 
-            }
 
             if(ObjectUtils.isNotNull(vo.getCreateBy())){
                 vo.setUsername(sysUserMapper.selectById(vo.getCreateBy()).getNickName());
@@ -120,38 +138,30 @@ public class MesProcurementplanServiceImpl implements IMesProcurementplanService
         return TableDataInfo.build(result);
     }
     /**
-     * 补全字段并计算面积
+     * 解析字符串并计算体积
      *
-     * @param input 输入的字段
-     * @return 面积（长 × 宽 × 高）
+     * @param input 输入的字符串（如 "67.5*51*25.5cm" 或 "12*28cm"）
      */
-    public static int calculateVolume(String input) {
-        // 补全字段
-        String[] dimensions = input.split("\\*");
-        int length = 0, width = 0, height = 0;
+    public static double calculateAndPrintDimensions(String input) {
+        // 提取后缀（如 "cm"）
+        String suffix = input.replaceAll("[0-9.*]", ""); // 去掉数字和*，保留后缀
+        String dimensionsStr = input.replaceAll("[^0-9.*]", ""); // 去掉非数字和*，保留长宽高
 
-        // 根据分割后的数组长度补全字段
-        if (dimensions.length == 1) {
-            // 格式为 "31"
-            length = Integer.parseInt(dimensions[0]);
-            width = 1;
-            height = 1;
-        } else if (dimensions.length == 2) {
-            // 格式为 "31*" 或 "31*21"
-            length = Integer.parseInt(dimensions[0]);
-            width = dimensions[1].isEmpty() ? 1 : Integer.parseInt(dimensions[1]);
-            height = 1;
-        } else if (dimensions.length == 3) {
-            // 格式为 "31*12*1"
-            length = Integer.parseInt(dimensions[0]);
-            width = Integer.parseInt(dimensions[1]);
-            height = Integer.parseInt(dimensions[2]);
-        } else {
+        // 分割长宽高
+        String[] dimensions = dimensionsStr.split("\\*");
+        if (dimensions.length < 2 || dimensions.length > 3) {
             throw new IllegalArgumentException("Invalid input format: " + input);
         }
 
-        // 计算面积
-        return length * width * height;
+        // 解析长宽高
+        double length = Double.parseDouble(dimensions[0]);
+        double width = Double.parseDouble(dimensions[1]);
+        double height = dimensions.length == 3 ? Double.parseDouble(dimensions[2]) : 1.0; // 如果只有长和宽，高度默认为1
+
+        // 计算体积
+        double volume = length * width * height;
+
+        return volume;
     }
     /**
      * 查询符合条件的采购计划列表

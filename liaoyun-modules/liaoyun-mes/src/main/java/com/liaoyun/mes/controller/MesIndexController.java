@@ -3,7 +3,13 @@ package com.liaoyun.mes.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.liaoyun.common.core.domain.R;
 import com.liaoyun.common.core.utils.StringUtils;
+import com.liaoyun.common.satoken.utils.LoginHelper;
+import com.liaoyun.common.sse.core.SseEmitterManager;
+import com.liaoyun.common.sse.dto.SseMessageDto;
 import com.liaoyun.common.web.core.BaseController;
+import com.liaoyun.common.websocket.dto.WebSocketMessageDto;
+import com.liaoyun.common.websocket.holder.WebSocketSessionHolder;
+import com.liaoyun.common.websocket.utils.WebSocketUtils;
 import com.liaoyun.mes.domain.MesWork;
 import com.liaoyun.mes.domain.bo.MesQuaRecBo;
 import com.liaoyun.mes.domain.bo.MesWorkRecBo;
@@ -35,8 +41,23 @@ public class MesIndexController extends BaseController {
     private final IMesQuaRecService quaRecService;
     private final IMesWorkRecService workRecService;
     private final MesWorkMapper mesWorkMapper;
+    private final SseEmitterManager sseEmitterManager;
+    @GetMapping("/tolk")
+    public R<Map<String,Integer>> tolk(){
+
+        Map<String,Integer> map = new HashMap<>();
+        SseMessageDto dto = new SseMessageDto();
+        dto.setUserIds(List.of(LoginHelper.getUserId()));
+        dto.setMessage("123");
+        sseEmitterManager.publishMessage(dto);
+        return R.ok(map);
+    }
+
     @GetMapping("/list")
     public R<Map<String,Integer>> info(){
+        WebSocketSessionHolder.getSessionsAll().forEach(key -> {
+            WebSocketUtils.sendMessage(key, "123");
+        });
         //获取当天
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dates=sdf.format(System.currentTimeMillis());

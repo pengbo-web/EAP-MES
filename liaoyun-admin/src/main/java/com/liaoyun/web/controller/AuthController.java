@@ -101,13 +101,6 @@ public class AuthController {
         // 登录
         LoginVo loginVo = IAuthStrategy.login(body, client, grantType);
 
-        Long userId = LoginHelper.getUserId();
-        scheduledExecutorService.schedule(() -> {
-            SseMessageDto dto = new SseMessageDto();
-            dto.setMessage("欢迎登录liaoyun-Vue-Plus后台管理系统");
-            dto.setUserIds(List.of(userId));
-            SseMessageUtils.publishMessage(dto);
-        }, 5, TimeUnit.SECONDS);
         return R.ok(loginVo);
     }
 

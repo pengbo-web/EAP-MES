@@ -7,12 +7,14 @@ import com.liaoyun.common.mybatis.core.page.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.liaoyun.common.satoken.utils.LoginHelper;
 import com.liaoyun.mes.domain.MesAllrec;
 import com.liaoyun.mes.domain.MesStock;
 import com.liaoyun.mes.domain.vo.MesStockTypeVo;
 import com.liaoyun.mes.mapper.MesAllrecMapper;
 import com.liaoyun.mes.mapper.MesStockMapper;
 import com.liaoyun.mes.mapper.MesStockTypeMapper;
+import com.liaoyun.system.mapper.MesInventoryLedgerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.liaoyun.mes.domain.bo.MesOurecBo;
@@ -23,6 +25,7 @@ import com.liaoyun.mes.service.IMesOurecService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -43,6 +46,7 @@ public class MesOurecServiceImpl implements IMesOurecService {
     private final MesAllrecMapper allrecMapper;
 
     private final MesStockTypeMapper typeMapper;
+    private final MesInventoryLedgerMapper inventoryLedgerMapper;
     /**
      * 查询出库记录
      *
@@ -136,10 +140,22 @@ public class MesOurecServiceImpl implements IMesOurecService {
         if(StringUtils.equals(bo.getStatus(),"1")){
             try{
                 MesStock stock = stockMapper.selectById(update.getStockid());
-                BigDecimal nes = update.getCount();
-                BigDecimal newStock = stock.getNowstock().subtract(nes);
-                stock.setNowstock(newStock);
-                if(newStock.intValue()<0){
+                BigDecimal pn=BigDecimal.ZERO;
+                try{
+                    pn=new BigDecimal(inventoryLedgerMapper.getStockByProductId(stock.getId()));
+                }catch (Exception e){
+
+                }
+
+                stock.setNowstock(pn);
+                Map<String,Object> map=new HashMap<>();
+                map.put("stockid",stock.getId());
+                map.put("count",update.getCount().intValue());
+                map.put("kwid",null);
+                map.put("tenantid", LoginHelper.getTenantId());
+                map.put("msg",0);
+                inventoryLedgerMapper.callInOutProcedure(map);
+                if(!map.get("msg").equals(1)){
                     return false;
                 }
                 MesAllrec allrec=new MesAllrec();
@@ -150,7 +166,6 @@ public class MesOurecServiceImpl implements IMesOurecService {
                 allrec.setRemark(bo.getRemark());
                 allrec.setPrices(bo.getNprice());
                 allrecMapper.insert(allrec);
-                stockMapper.updateById(stock);
             }catch (Exception e){
 
             }

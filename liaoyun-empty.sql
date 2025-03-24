@@ -1,0 +1,4292 @@
+/*
+ Navicat Premium Dump SQL
+
+ Source Server         : localhost
+ Source Server Type    : MySQL
+ Source Server Version : 50731 (5.7.31)
+ Source Host           : 127.0.0.1:3306
+ Source Schema         : liaoyun
+
+ Target Server Type    : MySQL
+ Target Server Version : 50731 (5.7.31)
+ File Encoding         : 65001
+
+ Date: 24/03/2025 20:54:48
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for act_evt_log
+-- ----------------------------
+DROP TABLE IF EXISTS `act_evt_log`;
+CREATE TABLE `act_evt_log` (
+  `LOG_NR_` bigint(20) NOT NULL AUTO_INCREMENT,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_STAMP_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DATA_` longblob,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `IS_PROCESSED_` tinyint(4) DEFAULT '0',
+  PRIMARY KEY (`LOG_NR_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ge_bytearray
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ge_bytearray`;
+CREATE TABLE `act_ge_bytearray` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `BYTES_` longblob,
+  `GENERATED_` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_FK_BYTEARR_DEPL` (`DEPLOYMENT_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_BYTEARR_DEPL` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `act_re_deployment` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ge_property
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ge_property`;
+CREATE TABLE `act_ge_property` (
+  `NAME_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `VALUE_` varchar(300) COLLATE utf8_bin DEFAULT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  PRIMARY KEY (`NAME_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_actinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_actinst`;
+CREATE TABLE `act_hi_actinst` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `TRANSACTION_ORDER_` int(11) DEFAULT NULL,
+  `DURATION_` bigint(20) DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_ACT_INST_START` (`START_TIME_`) USING BTREE,
+  KEY `ACT_IDX_HI_ACT_INST_END` (`END_TIME_`) USING BTREE,
+  KEY `ACT_IDX_HI_ACT_INST_PROCINST` (`PROC_INST_ID_`,`ACT_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_ACT_INST_EXEC` (`EXECUTION_ID_`,`ACT_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_attachment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_attachment`;
+CREATE TABLE `act_hi_attachment` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `URL_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CONTENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_comment`;
+CREATE TABLE `act_hi_comment` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_` datetime(3) NOT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `MESSAGE_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `FULL_MSG_` longblob,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_detail`;
+CREATE TABLE `act_hi_detail` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `TIME_` datetime(3) NOT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint(20) DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_DETAIL_PROC_INST` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_DETAIL_ACT_INST` (`ACT_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_DETAIL_TIME` (`TIME_`) USING BTREE,
+  KEY `ACT_IDX_HI_DETAIL_NAME` (`NAME_`) USING BTREE,
+  KEY `ACT_IDX_HI_DETAIL_TASK_ID` (`TASK_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_entitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_entitylink`;
+CREATE TABLE `act_hi_entitylink` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_ENT_LNK_ROOT_SCOPE` (`ROOT_SCOPE_ID_`,`ROOT_SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_ENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_identitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_identitylink`;
+CREATE TABLE `act_hi_identitylink` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_USER` (`USER_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_TASK` (`TASK_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_IDENT_LNK_PROCINST` (`PROC_INST_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_procinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_procinst`;
+CREATE TABLE `act_hi_procinst` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT '1',
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint(20) DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `END_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE KEY `PROC_INST_ID_` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_PRO_INST_END` (`END_TIME_`) USING BTREE,
+  KEY `ACT_IDX_HI_PRO_I_BUSKEY` (`BUSINESS_KEY_`) USING BTREE,
+  KEY `ACT_IDX_HI_PRO_SUPER_PROCINST` (`SUPER_PROCESS_INSTANCE_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_taskinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_taskinst`;
+CREATE TABLE `act_hi_taskinst` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `CLAIM_TIME_` datetime(3) DEFAULT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint(20) DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `PRIORITY_` int(11) DEFAULT NULL,
+  `DUE_DATE_` datetime(3) DEFAULT NULL,
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
+  `STATE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IN_PROGRESS_TIME_` datetime(3) DEFAULT NULL,
+  `IN_PROGRESS_STARTED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CLAIMED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUSPENDED_TIME_` datetime(3) DEFAULT NULL,
+  `SUSPENDED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `COMPLETED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IN_PROGRESS_DUE_DATE_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_TASK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_TASK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_TASK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_TASK_INST_PROCINST` (`PROC_INST_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_tsk_log
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_tsk_log`;
+CREATE TABLE `act_hi_tsk_log` (
+  `ID_` bigint(20) NOT NULL AUTO_INCREMENT,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TIME_STAMP_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DATA_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_hi_varinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_varinst`;
+CREATE TABLE `act_hi_varinst` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT '1',
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint(20) DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `META_INFO_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_PROCVAR_NAME_TYPE` (`NAME_`,`VAR_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_VAR_SCOPE_ID_TYPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_VAR_SUB_ID_TYPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_HI_PROCVAR_PROC_INST` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_PROCVAR_TASK_ID` (`TASK_ID_`) USING BTREE,
+  KEY `ACT_IDX_HI_PROCVAR_EXE` (`EXECUTION_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_procdef_info
+-- ----------------------------
+DROP TABLE IF EXISTS `act_procdef_info`;
+CREATE TABLE `act_procdef_info` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `INFO_JSON_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE KEY `ACT_UNIQ_INFO_PROCDEF` (`PROC_DEF_ID_`) USING BTREE,
+  KEY `ACT_IDX_INFO_PROCDEF` (`PROC_DEF_ID_`) USING BTREE,
+  KEY `ACT_FK_INFO_JSON_BA` (`INFO_JSON_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_INFO_JSON_BA` FOREIGN KEY (`INFO_JSON_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_INFO_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_re_deployment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_deployment`;
+CREATE TABLE `act_re_deployment` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `DEPLOY_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_re_model
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_model`;
+CREATE TABLE `act_re_model` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LAST_UPDATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `VERSION_` int(11) DEFAULT NULL,
+  `META_INFO_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_EXTRA_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_FK_MODEL_SOURCE` (`EDITOR_SOURCE_VALUE_ID_`) USING BTREE,
+  KEY `ACT_FK_MODEL_SOURCE_EXTRA` (`EDITOR_SOURCE_EXTRA_VALUE_ID_`) USING BTREE,
+  KEY `ACT_FK_MODEL_DEPLOYMENT` (`DEPLOYMENT_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_MODEL_DEPLOYMENT` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `act_re_deployment` (`ID_`),
+  CONSTRAINT `ACT_FK_MODEL_SOURCE` FOREIGN KEY (`EDITOR_SOURCE_VALUE_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_MODEL_SOURCE_EXTRA` FOREIGN KEY (`EDITOR_SOURCE_EXTRA_VALUE_ID_`) REFERENCES `act_ge_bytearray` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_re_procdef
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_procdef`;
+CREATE TABLE `act_re_procdef` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VERSION_` int(11) NOT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DGRM_RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `HAS_START_FORM_KEY_` tinyint(4) DEFAULT NULL,
+  `HAS_GRAPHICAL_NOTATION_` tinyint(4) DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_VERSION_` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE KEY `ACT_UNIQ_PROCDEF` (`KEY_`,`VERSION_`,`DERIVED_VERSION_`,`TENANT_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_actinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_actinst`;
+CREATE TABLE `act_ru_actinst` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint(20) DEFAULT NULL,
+  `TRANSACTION_ORDER_` int(11) DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_START` (`START_TIME_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_END` (`END_TIME_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_PROC` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_PROC_ACT` (`PROC_INST_ID_`,`ACT_ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_EXEC` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_EXEC_ACT` (`EXECUTION_ID_`,`ACT_ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_ACTI_TASK` (`TASK_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_deadletter_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_deadletter_job`;
+CREATE TABLE `act_ru_deadletter_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_DEADLETTER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`) USING BTREE,
+  KEY `ACT_IDX_DEADLETTER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`) USING BTREE,
+  KEY `ACT_IDX_DEADLETTER_JOB_CORRELATION_ID` (`CORRELATION_ID_`) USING BTREE,
+  KEY `ACT_IDX_DJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_DJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_DJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_DEADLETTER_JOB_EXECUTION` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`) USING BTREE,
+  KEY `ACT_FK_DEADLETTER_JOB_PROC_DEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_entitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_entitylink`;
+CREATE TABLE `act_ru_entitylink` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_ENT_LNK_ROOT_SCOPE` (`ROOT_SCOPE_ID_`,`ROOT_SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_ENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_event_subscr
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_event_subscr`;
+CREATE TABLE `act_ru_event_subscr` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `EVENT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EVENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTIVITY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CONFIGURATION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATED_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `SCOPE_DEFINITION_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_EVENT_SUBSCR_CONFIG_` (`CONFIGURATION_`) USING BTREE,
+  KEY `ACT_IDX_EVENT_SUBSCR_SCOPEREF_` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_EVENT_EXEC` (`EXECUTION_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_EVENT_EXEC` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_execution
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_execution`;
+CREATE TABLE `act_ru_execution` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_EXEC_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IS_ACTIVE_` tinyint(4) DEFAULT NULL,
+  `IS_CONCURRENT_` tinyint(4) DEFAULT NULL,
+  `IS_SCOPE_` tinyint(4) DEFAULT NULL,
+  `IS_EVENT_SCOPE_` tinyint(4) DEFAULT NULL,
+  `IS_MI_ROOT_` tinyint(4) DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) DEFAULT NULL,
+  `CACHED_ENT_STATE_` int(11) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IS_COUNT_ENABLED_` tinyint(4) DEFAULT NULL,
+  `EVT_SUBSCR_COUNT_` int(11) DEFAULT NULL,
+  `TASK_COUNT_` int(11) DEFAULT NULL,
+  `JOB_COUNT_` int(11) DEFAULT NULL,
+  `TIMER_JOB_COUNT_` int(11) DEFAULT NULL,
+  `SUSP_JOB_COUNT_` int(11) DEFAULT NULL,
+  `DEADLETTER_JOB_COUNT_` int(11) DEFAULT NULL,
+  `EXTERNAL_WORKER_JOB_COUNT_` int(11) DEFAULT NULL,
+  `VAR_COUNT_` int(11) DEFAULT NULL,
+  `ID_LINK_COUNT_` int(11) DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_EXEC_BUSKEY` (`BUSINESS_KEY_`) USING BTREE,
+  KEY `ACT_IDC_EXEC_ROOT` (`ROOT_PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_IDX_EXEC_REF_ID_` (`REFERENCE_ID_`) USING BTREE,
+  KEY `ACT_FK_EXE_PROCINST` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_FK_EXE_PARENT` (`PARENT_ID_`) USING BTREE,
+  KEY `ACT_FK_EXE_SUPER` (`SUPER_EXEC_`) USING BTREE,
+  KEY `ACT_FK_EXE_PROCDEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_EXE_PARENT` FOREIGN KEY (`PARENT_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE CASCADE,
+  CONSTRAINT `ACT_FK_EXE_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`),
+  CONSTRAINT `ACT_FK_EXE_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ACT_FK_EXE_SUPER` FOREIGN KEY (`SUPER_EXEC_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_external_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_external_job`;
+CREATE TABLE `act_ru_external_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int(11) DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_EXTERNAL_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`) USING BTREE,
+  KEY `ACT_IDX_EXTERNAL_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`) USING BTREE,
+  KEY `ACT_IDX_EXTERNAL_JOB_CORRELATION_ID` (`CORRELATION_ID_`) USING BTREE,
+  KEY `ACT_IDX_EJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_EJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_EJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  CONSTRAINT `ACT_FK_EXTERNAL_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_EXTERNAL_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_history_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_history_job`;
+CREATE TABLE `act_ru_history_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int(11) DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ADV_HANDLER_CFG_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_identitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_identitylink`;
+CREATE TABLE `act_ru_identitylink` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_IDENT_LNK_USER` (`USER_ID_`) USING BTREE,
+  KEY `ACT_IDX_IDENT_LNK_GROUP` (`GROUP_ID_`) USING BTREE,
+  KEY `ACT_IDX_IDENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_IDENT_LNK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_IDENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_ATHRZ_PROCEDEF` (`PROC_DEF_ID_`) USING BTREE,
+  KEY `ACT_FK_TSKASS_TASK` (`TASK_ID_`) USING BTREE,
+  KEY `ACT_FK_IDL_PROCINST` (`PROC_INST_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_ATHRZ_PROCEDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`),
+  CONSTRAINT `ACT_FK_IDL_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_TSKASS_TASK` FOREIGN KEY (`TASK_ID_`) REFERENCES `act_ru_task` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_job`;
+CREATE TABLE `act_ru_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int(11) DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`) USING BTREE,
+  KEY `ACT_IDX_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`) USING BTREE,
+  KEY `ACT_IDX_JOB_CORRELATION_ID` (`CORRELATION_ID_`) USING BTREE,
+  KEY `ACT_IDX_JOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_JOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_JOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_JOB_EXECUTION` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`) USING BTREE,
+  KEY `ACT_FK_JOB_PROC_DEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_suspended_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_suspended_job`;
+CREATE TABLE `act_ru_suspended_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int(11) DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_SUSPENDED_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`) USING BTREE,
+  KEY `ACT_IDX_SUSPENDED_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`) USING BTREE,
+  KEY `ACT_IDX_SUSPENDED_JOB_CORRELATION_ID` (`CORRELATION_ID_`) USING BTREE,
+  KEY `ACT_IDX_SJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_SJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_SJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_SUSPENDED_JOB_EXECUTION` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`) USING BTREE,
+  KEY `ACT_FK_SUSPENDED_JOB_PROC_DEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_task
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_task`;
+CREATE TABLE `act_ru_task` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DELEGATION_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PRIORITY_` int(11) DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `DUE_DATE_` datetime(3) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CLAIM_TIME_` datetime(3) DEFAULT NULL,
+  `IS_COUNT_ENABLED_` tinyint(4) DEFAULT NULL,
+  `VAR_COUNT_` int(11) DEFAULT NULL,
+  `ID_LINK_COUNT_` int(11) DEFAULT NULL,
+  `SUB_TASK_COUNT_` int(11) DEFAULT NULL,
+  `STATE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IN_PROGRESS_TIME_` datetime(3) DEFAULT NULL,
+  `IN_PROGRESS_STARTED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CLAIMED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUSPENDED_TIME_` datetime(3) DEFAULT NULL,
+  `SUSPENDED_BY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IN_PROGRESS_DUE_DATE_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_TASK_CREATE` (`CREATE_TIME_`) USING BTREE,
+  KEY `ACT_IDX_TASK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_TASK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_TASK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_TASK_EXE` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_TASK_PROCINST` (`PROC_INST_ID_`) USING BTREE,
+  KEY `ACT_FK_TASK_PROCDEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_TASK_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_TASK_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`),
+  CONSTRAINT `ACT_FK_TASK_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_timer_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_timer_job`;
+CREATE TABLE `act_ru_timer_job` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int(11) DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_TIMER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`) USING BTREE,
+  KEY `ACT_IDX_TIMER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`) USING BTREE,
+  KEY `ACT_IDX_TIMER_JOB_CORRELATION_ID` (`CORRELATION_ID_`) USING BTREE,
+  KEY `ACT_IDX_TIMER_JOB_DUEDATE` (`DUEDATE_`) USING BTREE,
+  KEY `ACT_IDX_TJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_TJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_TJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_TIMER_JOB_EXECUTION` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_TIMER_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`) USING BTREE,
+  KEY `ACT_FK_TIMER_JOB_PROC_DEF` (`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_TIMER_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for act_ru_variable
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_variable`;
+CREATE TABLE `act_ru_variable` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint(20) DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `META_INFO_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `ACT_IDX_RU_VAR_SCOPE_ID_TYPE` (`SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_IDX_RU_VAR_SUB_ID_TYPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`) USING BTREE,
+  KEY `ACT_FK_VAR_BYTEARRAY` (`BYTEARRAY_ID_`) USING BTREE,
+  KEY `ACT_IDX_VARIABLE_TASK_ID` (`TASK_ID_`) USING BTREE,
+  KEY `ACT_FK_VAR_EXE` (`EXECUTION_ID_`) USING BTREE,
+  KEY `ACT_FK_VAR_PROCINST` (`PROC_INST_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_VAR_BYTEARRAY` FOREIGN KEY (`BYTEARRAY_ID_`) REFERENCES `act_ge_bytearray` (`ID_`),
+  CONSTRAINT `ACT_FK_VAR_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`),
+  CONSTRAINT `ACT_FK_VAR_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for flow_category
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_category`;
+CREATE TABLE `flow_category` (
+  `category_id` bigint(20) NOT NULL COMMENT '流程分类ID',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父流程分类id',
+  `ancestors` varchar(500) DEFAULT '' COMMENT '祖级列表',
+  `category_name` varchar(30) NOT NULL COMMENT '流程分类名称',
+  `order_num` int(4) DEFAULT '0' COMMENT '显示顺序',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程分类';
+
+-- ----------------------------
+-- Table structure for flow_definition
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_definition`;
+CREATE TABLE `flow_definition` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+  `flow_code` varchar(40) NOT NULL COMMENT '流程编码',
+  `flow_name` varchar(100) NOT NULL COMMENT '流程名称',
+  `category` varchar(100) DEFAULT NULL COMMENT '流程类别',
+  `version` varchar(20) NOT NULL COMMENT '流程版本',
+  `is_publish` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布（0未发布 1已发布 9失效）',
+  `form_custom` char(1) DEFAULT 'N' COMMENT '审批表单是否自定义（Y是 N否）',
+  `form_path` varchar(100) DEFAULT NULL COMMENT '审批表单路径',
+  `activity_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '流程激活状态（0挂起 1激活）',
+  `listener_type` varchar(100) DEFAULT NULL COMMENT '监听器类型',
+  `listener_path` varchar(400) DEFAULT NULL COMMENT '监听器路径',
+  `ext` varchar(500) DEFAULT NULL COMMENT '业务详情 存业务表对象json字符串',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程定义表';
+
+-- ----------------------------
+-- Table structure for flow_his_task
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_his_task`;
+CREATE TABLE `flow_his_task` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+  `definition_id` bigint(20) NOT NULL COMMENT '对应flow_definition表的id',
+  `instance_id` bigint(20) NOT NULL COMMENT '对应flow_instance表的id',
+  `task_id` bigint(20) NOT NULL COMMENT '对应flow_task表的id',
+  `node_code` varchar(100) DEFAULT NULL COMMENT '开始节点编码',
+  `node_name` varchar(100) DEFAULT NULL COMMENT '开始节点名称',
+  `node_type` tinyint(1) DEFAULT NULL COMMENT '开始节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `target_node_code` varchar(200) DEFAULT NULL COMMENT '目标节点编码',
+  `target_node_name` varchar(200) DEFAULT NULL COMMENT '结束节点名称',
+  `approver` varchar(40) DEFAULT NULL COMMENT '审批者',
+  `cooperate_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '协作方式(1审批 2转办 3委派 4会签 5票签 6加签 7减签)',
+  `collaborator` varchar(40) DEFAULT NULL COMMENT '协作人',
+  `skip_type` varchar(10) NOT NULL COMMENT '流转类型（PASS通过 REJECT退回 NONE无动作）',
+  `flow_status` varchar(20) NOT NULL COMMENT '流程状态（1审批中 2 审批通过 9已退回 10失效）',
+  `form_custom` char(1) DEFAULT 'N' COMMENT '审批表单是否自定义（Y是 N否）',
+  `form_path` varchar(100) DEFAULT NULL COMMENT '审批表单路径',
+  `message` varchar(500) DEFAULT NULL COMMENT '审批意见',
+  `variable` text COMMENT '任务变量',
+  `ext` varchar(500) DEFAULT NULL COMMENT '业务详情 存业务表对象json字符串',
+  `create_time` datetime DEFAULT NULL COMMENT '任务开始时间',
+  `update_time` datetime DEFAULT NULL COMMENT '审批完成时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='历史任务记录表';
+
+-- ----------------------------
+-- Table structure for flow_instance
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_instance`;
+CREATE TABLE `flow_instance` (
+  `id` bigint(20) NOT NULL COMMENT '主键id',
+  `definition_id` bigint(20) NOT NULL COMMENT '对应flow_definition表的id',
+  `business_id` varchar(40) NOT NULL COMMENT '业务id',
+  `node_type` tinyint(1) NOT NULL COMMENT '节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `node_code` varchar(40) NOT NULL COMMENT '流程节点编码',
+  `node_name` varchar(100) DEFAULT NULL COMMENT '流程节点名称',
+  `variable` text COMMENT '任务变量',
+  `flow_status` varchar(20) NOT NULL COMMENT '流程状态（0待提交 1审批中 2 审批通过 3自动通过 4终止 5作废 6撤销 7取回  8已完成 9已退回 10失效）',
+  `activity_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '流程激活状态（0挂起 1激活）',
+  `def_json` text COMMENT '流程定义json',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `ext` varchar(500) DEFAULT NULL COMMENT '扩展字段，预留给业务系统使用',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程实例表';
+
+-- ----------------------------
+-- Table structure for flow_node
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_node`;
+CREATE TABLE `flow_node` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+  `node_type` tinyint(1) NOT NULL COMMENT '节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `definition_id` bigint(20) NOT NULL COMMENT '流程定义id',
+  `node_code` varchar(100) NOT NULL COMMENT '流程节点编码',
+  `node_name` varchar(100) DEFAULT NULL COMMENT '流程节点名称',
+  `permission_flag` varchar(200) DEFAULT NULL COMMENT '权限标识（权限类型:权限标识，可以多个，用逗号隔开)',
+  `node_ratio` decimal(6,3) DEFAULT NULL COMMENT '流程签署比例值',
+  `coordinate` varchar(100) DEFAULT NULL COMMENT '坐标',
+  `skip_any_node` varchar(100) DEFAULT 'N' COMMENT '是否可以退回任意节点（Y是 N否）即将删除',
+  `any_node_skip` varchar(100) DEFAULT NULL COMMENT '任意结点跳转',
+  `listener_type` varchar(100) DEFAULT NULL COMMENT '监听器类型',
+  `listener_path` varchar(400) DEFAULT NULL COMMENT '监听器路径',
+  `handler_type` varchar(100) DEFAULT NULL COMMENT '处理器类型',
+  `handler_path` varchar(400) DEFAULT NULL COMMENT '处理器路径',
+  `form_custom` char(1) DEFAULT 'N' COMMENT '审批表单是否自定义（Y是 N否）',
+  `form_path` varchar(100) DEFAULT NULL COMMENT '审批表单路径',
+  `version` varchar(20) NOT NULL COMMENT '版本',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程节点表';
+
+-- ----------------------------
+-- Table structure for flow_skip
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_skip`;
+CREATE TABLE `flow_skip` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+  `definition_id` bigint(20) NOT NULL COMMENT '流程定义id',
+  `now_node_code` varchar(100) NOT NULL COMMENT '当前流程节点的编码',
+  `now_node_type` tinyint(1) DEFAULT NULL COMMENT '当前节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `next_node_code` varchar(100) NOT NULL COMMENT '下一个流程节点的编码',
+  `next_node_type` tinyint(1) DEFAULT NULL COMMENT '下一个节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `skip_name` varchar(100) DEFAULT NULL COMMENT '跳转名称',
+  `skip_type` varchar(40) DEFAULT NULL COMMENT '跳转类型（PASS审批通过 REJECT退回）',
+  `skip_condition` varchar(200) DEFAULT NULL COMMENT '跳转条件',
+  `coordinate` varchar(100) DEFAULT NULL COMMENT '坐标',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节点跳转关联表';
+
+-- ----------------------------
+-- Table structure for flow_task
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_task`;
+CREATE TABLE `flow_task` (
+  `id` bigint(20) NOT NULL COMMENT '主键id',
+  `definition_id` bigint(20) NOT NULL COMMENT '对应flow_definition表的id',
+  `instance_id` bigint(20) NOT NULL COMMENT '对应flow_instance表的id',
+  `node_code` varchar(100) NOT NULL COMMENT '节点编码',
+  `node_name` varchar(100) DEFAULT NULL COMMENT '节点名称',
+  `node_type` tinyint(1) NOT NULL COMMENT '节点类型（0开始节点 1中间节点 2结束节点 3互斥网关 4并行网关）',
+  `form_custom` char(1) DEFAULT 'N' COMMENT '审批表单是否自定义（Y是 N否）',
+  `form_path` varchar(100) DEFAULT NULL COMMENT '审批表单路径',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='待办任务表';
+
+-- ----------------------------
+-- Table structure for flow_user
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_user`;
+CREATE TABLE `flow_user` (
+  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+  `type` char(1) NOT NULL COMMENT '人员类型（1待办任务的审批人权限 2待办任务的转办人权限 3待办任务的委托人权限）',
+  `processed_by` varchar(80) DEFAULT NULL COMMENT '权限人',
+  `associated` bigint(20) NOT NULL COMMENT '任务表id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` varchar(80) DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志',
+  `tenant_id` varchar(40) DEFAULT NULL COMMENT '租户id',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `user_processed_type` (`processed_by`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程用户表';
+
+-- ----------------------------
+-- Table structure for flw_channel_definition
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_channel_definition`;
+CREATE TABLE `flw_channel_definition` (
+  `ID_` varchar(255) NOT NULL,
+  `NAME_` varchar(255) DEFAULT NULL,
+  `VERSION_` int(11) DEFAULT NULL,
+  `KEY_` varchar(255) DEFAULT NULL,
+  `CATEGORY_` varchar(255) DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) DEFAULT NULL,
+  `TYPE_` varchar(255) DEFAULT NULL,
+  `IMPLEMENTATION_` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE KEY `ACT_IDX_CHANNEL_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_ev_databasechangelog
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_ev_databasechangelog`;
+CREATE TABLE `flw_ev_databasechangelog` (
+  `ID` varchar(255) NOT NULL,
+  `AUTHOR` varchar(255) NOT NULL,
+  `FILENAME` varchar(255) NOT NULL,
+  `DATEEXECUTED` datetime NOT NULL,
+  `ORDEREXECUTED` int(11) NOT NULL,
+  `EXECTYPE` varchar(10) NOT NULL,
+  `MD5SUM` varchar(35) DEFAULT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  `COMMENTS` varchar(255) DEFAULT NULL,
+  `TAG` varchar(255) DEFAULT NULL,
+  `LIQUIBASE` varchar(20) DEFAULT NULL,
+  `CONTEXTS` varchar(255) DEFAULT NULL,
+  `LABELS` varchar(255) DEFAULT NULL,
+  `DEPLOYMENT_ID` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_ev_databasechangeloglock
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_ev_databasechangeloglock`;
+CREATE TABLE `flw_ev_databasechangeloglock` (
+  `ID` int(11) NOT NULL,
+  `LOCKED` tinyint(1) NOT NULL,
+  `LOCKGRANTED` datetime DEFAULT NULL,
+  `LOCKEDBY` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_event_definition
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_event_definition`;
+CREATE TABLE `flw_event_definition` (
+  `ID_` varchar(255) NOT NULL,
+  `NAME_` varchar(255) DEFAULT NULL,
+  `VERSION_` int(11) DEFAULT NULL,
+  `KEY_` varchar(255) DEFAULT NULL,
+  `CATEGORY_` varchar(255) DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE KEY `ACT_IDX_EVENT_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_event_deployment
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_event_deployment`;
+CREATE TABLE `flw_event_deployment` (
+  `ID_` varchar(255) NOT NULL,
+  `NAME_` varchar(255) DEFAULT NULL,
+  `CATEGORY_` varchar(255) DEFAULT NULL,
+  `DEPLOY_TIME_` datetime(3) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_event_resource
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_event_resource`;
+CREATE TABLE `flw_event_resource` (
+  `ID_` varchar(255) NOT NULL,
+  `NAME_` varchar(255) DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) DEFAULT NULL,
+  `RESOURCE_BYTES_` longblob,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for flw_ru_batch
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_ru_batch`;
+CREATE TABLE `flw_ru_batch` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) NOT NULL,
+  `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BATCH_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for flw_ru_batch_part
+-- ----------------------------
+DROP TABLE IF EXISTS `flw_ru_batch_part`;
+CREATE TABLE `flw_ru_batch_part` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) DEFAULT NULL,
+  `BATCH_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) NOT NULL,
+  `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RESULT_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  KEY `FLW_IDX_BATCH_PART` (`BATCH_ID_`) USING BTREE,
+  CONSTRAINT `FLW_FK_BATCH_PART_PARENT` FOREIGN KEY (`BATCH_ID_`) REFERENCES `flw_ru_batch` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ----------------------------
+-- Table structure for gen_table
+-- ----------------------------
+DROP TABLE IF EXISTS `gen_table`;
+CREATE TABLE `gen_table` (
+  `table_id` bigint(20) NOT NULL COMMENT '编号',
+  `data_name` varchar(200) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '数据源名称',
+  `table_name` varchar(200) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '表名称',
+  `table_comment` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '表描述',
+  `sub_table_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '关联子表的表名',
+  `sub_table_fk_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '子表关联的外键名',
+  `class_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '实体类名称',
+  `tpl_category` varchar(200) COLLATE utf8_unicode_ci DEFAULT 'crud' COMMENT '使用的模板（crud单表操作 tree树表操作）',
+  `package_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '生成包路径',
+  `module_name` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '生成模块名',
+  `business_name` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '生成业务名',
+  `function_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '生成功能名',
+  `function_author` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '生成功能作者',
+  `gen_type` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '生成代码方式（0zip压缩包 1自定义路径）',
+  `gen_path` varchar(200) COLLATE utf8_unicode_ci DEFAULT '/' COMMENT '生成路径（不填默认项目路径）',
+  `options` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '其它生成选项',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`table_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='代码生成业务表';
+
+-- ----------------------------
+-- Table structure for gen_table_column
+-- ----------------------------
+DROP TABLE IF EXISTS `gen_table_column`;
+CREATE TABLE `gen_table_column` (
+  `column_id` bigint(20) NOT NULL COMMENT '编号',
+  `table_id` bigint(20) DEFAULT NULL COMMENT '归属表编号',
+  `column_name` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '列名称',
+  `column_comment` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '列描述',
+  `column_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '列类型',
+  `java_type` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'JAVA类型',
+  `java_field` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'JAVA字段名',
+  `is_pk` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否主键（1是）',
+  `is_increment` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否自增（1是）',
+  `is_required` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否必填（1是）',
+  `is_insert` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否为插入字段（1是）',
+  `is_edit` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否编辑字段（1是）',
+  `is_list` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否列表字段（1是）',
+  `is_query` char(1) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '是否查询字段（1是）',
+  `query_type` varchar(200) COLLATE utf8_unicode_ci DEFAULT 'EQ' COMMENT '查询方式（等于、不等于、大于、小于、范围）',
+  `html_type` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
+  `dict_type` varchar(200) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典类型',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`column_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='代码生成业务表字段';
+
+-- ----------------------------
+-- Table structure for mes_allrec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_allrec`;
+CREATE TABLE `mes_allrec` (
+  `id` bigint(20) NOT NULL COMMENT '编码',
+  `type` varchar(255) DEFAULT NULL COMMENT '类型',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '来源',
+  `counts` decimal(10,4) DEFAULT NULL COMMENT '数量',
+  `unitid` bigint(20) DEFAULT NULL COMMENT '单位',
+  `prices` decimal(10,4) DEFAULT NULL COMMENT '价格',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `cname` varchar(255) DEFAULT NULL COMMENT '供应商',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `remark2` varchar(255) DEFAULT NULL,
+  `stocktype` bigint(20) DEFAULT NULL COMMENT '库位',
+  `orderid` varchar(255) DEFAULT NULL COMMENT '订单号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='出入库记录';
+
+-- ----------------------------
+-- Table structure for mes_config
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_config`;
+CREATE TABLE `mes_config` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `times` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '工作时间',
+  `chetime` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '检查时间',
+  `status` char(1) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) CHARACTER SET utf8mb4 DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='配置';
+
+-- ----------------------------
+-- Table structure for mes_custom
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_custom`;
+CREATE TABLE `mes_custom` (
+  `id` bigint(20) NOT NULL COMMENT '编码',
+  `type` varchar(100) DEFAULT NULL COMMENT '类型',
+  `descp` varchar(255) DEFAULT NULL COMMENT '简称',
+  `cardnum` varchar(255) DEFAULT NULL COMMENT '银行账户',
+  `title` varchar(30) DEFAULT NULL COMMENT '全称',
+  `cname` varchar(255) DEFAULT NULL COMMENT '联系人',
+  `phone` varchar(13) DEFAULT NULL COMMENT '联系方式',
+  `shnum` varchar(100) DEFAULT NULL COMMENT '社会编码',
+  `address` varchar(255) DEFAULT NULL COMMENT '收货地址',
+  `address1` varchar(255) DEFAULT NULL COMMENT '邮寄地址',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户供应商';
+
+-- ----------------------------
+-- Table structure for mes_cutting
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_cutting`;
+CREATE TABLE `mes_cutting` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `sn` varchar(255) DEFAULT NULL COMMENT '图号',
+  `brand` varchar(255) DEFAULT NULL COMMENT '品牌',
+  `otype` varchar(10) DEFAULT NULL COMMENT '类别',
+  `stocknum` int(11) DEFAULT NULL COMMENT '当前库存',
+  `stockrec` int(11) DEFAULT NULL COMMENT '历史库存',
+  `otstock` int(11) DEFAULT NULL COMMENT '报废库存',
+  `usestock` int(11) DEFAULT NULL COMMENT '使用中数量',
+  `otime` int(20) DEFAULT NULL COMMENT '保养周期',
+  `nexttime` datetime DEFAULT NULL COMMENT '下次周期',
+  `instock` int(11) DEFAULT NULL COMMENT '可用库存量',
+  `status` char(1) DEFAULT NULL COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `markcount` int(11) DEFAULT NULL COMMENT '已加工数量',
+  `proids` varchar(255) DEFAULT NULL COMMENT '加工产品',
+  `names` varchar(255) DEFAULT NULL COMMENT '刀具名称',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='刀具管理';
+
+-- ----------------------------
+-- Table structure for mes_cutting_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_cutting_rec`;
+CREATE TABLE `mes_cutting_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `toolid` bigint(11) DEFAULT NULL COMMENT '主表',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `rebak` varchar(255) DEFAULT NULL COMMENT '原因',
+  `type` char(1) DEFAULT NULL COMMENT '状态',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `work_id` varchar(500) DEFAULT NULL COMMENT '工作中',
+  `use_id` bigint(20) DEFAULT NULL,
+  `proce` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='刀具记录';
+
+-- ----------------------------
+-- Table structure for mes_cutting_use
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_cutting_use`;
+CREATE TABLE `mes_cutting_use` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `toolid` bigint(11) DEFAULT NULL COMMENT '主表',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `rebak` varchar(255) DEFAULT NULL COMMENT '原因',
+  `type` char(1) DEFAULT NULL COMMENT '状态',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `work_id` varchar(500) DEFAULT NULL COMMENT '工作中',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='刀具使用';
+
+-- ----------------------------
+-- Table structure for mes_equ_check
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_equ_check`;
+CREATE TABLE `mes_equ_check` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `maintype` char(1) DEFAULT NULL COMMENT '主类别',
+  `types` char(1) DEFAULT NULL COMMENT '类别',
+  `equ_ids` varchar(255) DEFAULT NULL COMMENT '关联设备',
+  `title` varchar(255) DEFAULT NULL COMMENT '标题',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备点检';
+
+-- ----------------------------
+-- Table structure for mes_equ_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_equ_rec`;
+CREATE TABLE `mes_equ_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `equmian` bigint(20) DEFAULT NULL COMMENT '主表关联',
+  `listid` bigint(20) DEFAULT NULL COMMENT '列表关联',
+  `title` varchar(255) DEFAULT NULL COMMENT '标题',
+  `conts` varchar(255) DEFAULT NULL COMMENT '异常内容',
+  `rest` varchar(255) DEFAULT NULL COMMENT '结果',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `equid` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点检记录';
+
+-- ----------------------------
+-- Table structure for mes_equcheck_list
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_equcheck_list`;
+CREATE TABLE `mes_equcheck_list` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `equ_main` bigint(20) DEFAULT NULL COMMENT '关联主表',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `standards` varchar(255) DEFAULT NULL COMMENT '标准',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `status` char(1) DEFAULT NULL COMMENT '状态（0正常 1停用 2维修）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `upimg` varchar(255) DEFAULT NULL,
+  `rebak` varchar(255) DEFAULT NULL,
+  `equ_id` bigint(20) DEFAULT NULL COMMENT '设备id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备点检列表';
+
+-- ----------------------------
+-- Table structure for mes_equipment
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_equipment`;
+CREATE TABLE `mes_equipment` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `type_id` bigint(20) DEFAULT NULL COMMENT '类别',
+  `brand` varchar(100) DEFAULT NULL COMMENT '品牌',
+  `count` int(10) DEFAULT NULL COMMENT '保养次数',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `id` (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='设备列表';
+
+-- ----------------------------
+-- Table structure for mes_equipment_type
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_equipment_type`;
+CREATE TABLE `mes_equipment_type` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备类别';
+
+-- ----------------------------
+-- Table structure for mes_etool
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_etool`;
+CREATE TABLE `mes_etool` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编码',
+  `brand` varchar(255) DEFAULT NULL COMMENT '品牌',
+  `otype` varchar(255) DEFAULT NULL COMMENT '类别',
+  `stocknum` int(11) DEFAULT '0' COMMENT '当前库存',
+  `stockrec` int(11) DEFAULT '0' COMMENT '历史库存',
+  `otstock` int(11) DEFAULT '0' COMMENT '报废库存',
+  `usestock` int(11) DEFAULT '0' COMMENT '使用中数量',
+  `otime` datetime DEFAULT NULL COMMENT '保养周期',
+  `nexttime` datetime DEFAULT NULL COMMENT '下次周期',
+  `instock` int(11) DEFAULT '0' COMMENT '可用库存量',
+  `status` char(1) DEFAULT NULL COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工装夹具';
+
+-- ----------------------------
+-- Table structure for mes_inrec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_inrec`;
+CREATE TABLE `mes_inrec` (
+  `id` bigint(20) NOT NULL,
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `sn` varchar(255) DEFAULT NULL COMMENT '批次号',
+  `cust_id` bigint(20) DEFAULT NULL COMMENT '供应商',
+  `nprice` decimal(10,2) DEFAULT NULL COMMENT '进货价',
+  `stocktypeid` bigint(20) DEFAULT NULL COMMENT '入库货架',
+  `shuidian` int(11) DEFAULT NULL COMMENT '税点',
+  `met` varchar(255) DEFAULT NULL COMMENT '结算方式',
+  `count` decimal(10,2) DEFAULT NULL COMMENT '数量',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '类型',
+  `remark2` varchar(255) DEFAULT NULL,
+  `orderid` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='入库记录';
+
+-- ----------------------------
+-- Table structure for mes_inst
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_inst`;
+CREATE TABLE `mes_inst` (
+  `id` bigint(20) NOT NULL,
+  `recids` longtext COMMENT '采购列表',
+  `sn` varchar(255) DEFAULT NULL COMMENT '批次号',
+  `stocktype` bigint(20) DEFAULT NULL COMMENT '入库位置',
+  `allprice` decimal(10,2) DEFAULT NULL COMMENT '总价',
+  `MET` varchar(255) DEFAULT NULL COMMENT '结算方式',
+  `SHUI` varchar(255) DEFAULT NULL COMMENT '税点',
+  `files` varchar(255) DEFAULT NULL COMMENT '文件',
+  `ctime` datetime DEFAULT NULL COMMENT '采购时间',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `ispri` tinyint(3) DEFAULT '0' COMMENT '是否采购入库',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '类型',
+  `remark2` varchar(255) DEFAULT NULL,
+  `orderid` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='其他入库';
+
+-- ----------------------------
+-- Table structure for mes_instock
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_instock`;
+CREATE TABLE `mes_instock` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '产品',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '来源',
+  `nowprice` decimal(10,4) DEFAULT NULL COMMENT '价格',
+  `allprice` decimal(10,4) DEFAULT NULL COMMENT '总价',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `kwname` varchar(255) DEFAULT NULL COMMENT '库位信息',
+  `st` int(11) DEFAULT '0' COMMENT '是否流转入库',
+  `subtime` datetime DEFAULT NULL COMMENT '确认时间',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '库存信息',
+  `oldst` decimal(10,2) DEFAULT NULL COMMENT '更新前库存',
+  `kwid` bigint(20) DEFAULT NULL COMMENT '库位信息',
+  `kwsn` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='入库信息';
+
+-- ----------------------------
+-- Table structure for mes_inventory_ledger
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_inventory_ledger`;
+CREATE TABLE `mes_inventory_ledger` (
+  `id` bigint(20) DEFAULT NULL COMMENT '编号',
+  `sn` int(10) NOT NULL AUTO_INCREMENT,
+  `stockid` bigint(20) NOT NULL COMMENT '物料',
+  `location_id` bigint(20) NOT NULL COMMENT '库位ID（FK',
+  `quantity` int(10) NOT NULL COMMENT '操作数量（正数入库，负数出库）',
+  `operation` tinyint(3) NOT NULL COMMENT '操作类型（1入库/2出库）',
+  `batch_no` varchar(50) DEFAULT NULL COMMENT '业务批次号',
+  `status` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) CHARACTER SET utf8mb4 DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`sn`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2078 DEFAULT CHARSET=utf8 COMMENT='库存流水表\n';
+
+-- ----------------------------
+-- Table structure for mes_m_u_r
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_m_u_r`;
+CREATE TABLE `mes_m_u_r` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '套餐名',
+  `ids` longtext COMMENT '套餐内容',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='移动套餐';
+
+-- ----------------------------
+-- Table structure for mes_mobile_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_mobile_menu`;
+CREATE TABLE `mes_mobile_menu` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `icoimg` varchar(255) DEFAULT NULL COMMENT '图标',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `type` int(5) DEFAULT NULL COMMENT '类别',
+  `urls` varchar(255) DEFAULT NULL COMMENT '连接',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for mes_mobile_role
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_mobile_role`;
+CREATE TABLE `mes_mobile_role` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `user_id` longtext COMMENT '用户',
+  `menuids` longtext COMMENT '目录',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for mes_modelrec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_modelrec`;
+CREATE TABLE `mes_modelrec` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `modelid` bigint(20) DEFAULT NULL COMMENT '磨具编号',
+  `wname` varchar(255) DEFAULT NULL COMMENT '使用地址',
+  `type` varchar(255) DEFAULT NULL COMMENT '类型',
+  `cname` varchar(255) DEFAULT NULL COMMENT '外发名称',
+  `phone` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `endtime` datetime DEFAULT NULL COMMENT '归还日期',
+  `remark1` longtext,
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模具使用记录';
+
+-- ----------------------------
+-- Table structure for mes_oolist
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_oolist`;
+CREATE TABLE `mes_oolist` (
+  `id` bigint(20) NOT NULL,
+  `stockid` bigint(20) DEFAULT NULL,
+  `counts` decimal(10,4) DEFAULT NULL,
+  `mainid` bigint(20) DEFAULT NULL,
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `orderid` varchar(200) DEFAULT NULL COMMENT '订单号',
+  `remark2` varchar(255) DEFAULT NULL COMMENT '备注',
+  `kwid` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='委外入库详情';
+
+-- ----------------------------
+-- Table structure for mes_order
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_order`;
+CREATE TABLE `mes_order` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `shui` int(11) DEFAULT NULL COMMENT '税点',
+  `custid` bigint(20) DEFAULT NULL COMMENT '客户',
+  `subtime` datetime DEFAULT NULL COMMENT '交货时间',
+  `custno` varchar(255) DEFAULT NULL COMMENT '客户订单号',
+  `cycle` varchar(255) DEFAULT NULL COMMENT '付款周期',
+  `stids` longtext COMMENT '物料信息',
+  `fp` varchar(255) DEFAULT NULL COMMENT '发票管理',
+  `otime` datetime DEFAULT NULL COMMENT '订单时间',
+  `ismrp` int(3) DEFAULT '0',
+  `otfile` longtext COMMENT '其他文件',
+  `ctfile` longtext COMMENT '文件',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `tsta` tinyint(3) DEFAULT '0' COMMENT '状态2',
+  `pricount` int(11) DEFAULT NULL,
+  `istop` int(3) DEFAULT '0',
+  `canmark` int(11) DEFAULT '1',
+  `warmdate` int(11) DEFAULT '3',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='销售订单';
+
+-- ----------------------------
+-- Table structure for mes_order_de
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_order_de`;
+CREATE TABLE `mes_order_de` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `unid` bigint(20) DEFAULT NULL COMMENT '单位',
+  `prices` decimal(10,2) DEFAULT NULL COMMENT '单价',
+  `counts` int(11) DEFAULT NULL COMMENT '数量',
+  `allprice` decimal(10,2) DEFAULT NULL COMMENT '总价',
+  `ctime` datetime DEFAULT NULL COMMENT '交付时间',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `pcount` int(11) DEFAULT '0' COMMENT '已计划数量',
+  `ckcounts` decimal(10,4) DEFAULT '0.0000' COMMENT '已出库数量',
+  `orderid` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单详情';
+
+-- ----------------------------
+-- Table structure for mes_ourec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_ourec`;
+CREATE TABLE `mes_ourec` (
+  `id` bigint(20) NOT NULL,
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `sn` varchar(255) DEFAULT NULL COMMENT '批次号',
+  `cust_id` bigint(20) DEFAULT NULL COMMENT '供应商',
+  `nprice` decimal(10,2) DEFAULT NULL COMMENT '进货价',
+  `stocktypeid` bigint(20) DEFAULT NULL COMMENT '入库货架',
+  `shuidian` int(11) DEFAULT NULL COMMENT '税点',
+  `met` varchar(255) DEFAULT NULL COMMENT '结算方式',
+  `count` decimal(10,2) DEFAULT NULL COMMENT '数量',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `orderid` varchar(255) DEFAULT NULL,
+  `remark2` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='出库记录';
+
+-- ----------------------------
+-- Table structure for mes_oust
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_oust`;
+CREATE TABLE `mes_oust` (
+  `id` bigint(20) NOT NULL,
+  `recids` longtext COMMENT '采购列表',
+  `sn` varchar(255) DEFAULT NULL COMMENT '批次号',
+  `stocktype` bigint(20) DEFAULT NULL COMMENT '入库位置',
+  `allprice` decimal(10,2) DEFAULT NULL COMMENT '总价',
+  `MET` varchar(255) DEFAULT NULL COMMENT '结算方式',
+  `SHUI` varchar(255) DEFAULT NULL COMMENT '税点',
+  `files` varchar(255) DEFAULT NULL COMMENT '文件',
+  `ctime` datetime DEFAULT NULL COMMENT '采购时间',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='其他出库';
+
+-- ----------------------------
+-- Table structure for mes_out_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_out_rec`;
+CREATE TABLE `mes_out_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转sn',
+  `task_id` bigint(20) DEFAULT NULL COMMENT '流转id',
+  `out_id` bigint(20) DEFAULT NULL COMMENT '外协',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '产品',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='外协记录';
+
+-- ----------------------------
+-- Table structure for mes_outorder
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_outorder`;
+CREATE TABLE `mes_outorder` (
+  `id` bigint(20) NOT NULL COMMENT '编码',
+  `title` varchar(100) DEFAULT NULL COMMENT '委外名称',
+  `custid` bigint(20) DEFAULT NULL COMMENT '委外商家',
+  `orders` varchar(255) DEFAULT NULL COMMENT '订单号',
+  `sn` varchar(255) DEFAULT NULL COMMENT '外部编号',
+  `stockids` longtext COMMENT '委外物料清单',
+  `stocktype` varchar(255) DEFAULT NULL COMMENT '出库库位',
+  `prices` decimal(10,4) DEFAULT NULL COMMENT '价格',
+  `subtime` datetime DEFAULT NULL COMMENT '要求完成日期',
+  `outtime` datetime DEFAULT NULL COMMENT '出库时间',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `stoid` bigint(20) DEFAULT NULL COMMENT '入库物料',
+  `counts` int(11) DEFAULT NULL COMMENT '入库数量',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '类型',
+  `remark2` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='委外订单';
+
+-- ----------------------------
+-- Table structure for mes_outorder_de
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_outorder_de`;
+CREATE TABLE `mes_outorder_de` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `unid` bigint(20) DEFAULT NULL COMMENT '单位',
+  `prices` decimal(10,2) DEFAULT NULL COMMENT '单价',
+  `counts` int(11) DEFAULT NULL COMMENT '数量',
+  `allprice` decimal(10,2) DEFAULT NULL COMMENT '总价',
+  `ctime` datetime DEFAULT NULL COMMENT '交付时间',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `pcount` int(11) DEFAULT '0' COMMENT '已计划数量',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '类型',
+  `remark2` varchar(255) DEFAULT NULL,
+  `orderid` varchar(255) DEFAULT NULL,
+  `mainid` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单详情';
+
+-- ----------------------------
+-- Table structure for mes_outsourcing
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_outsourcing`;
+CREATE TABLE `mes_outsourcing` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '厂商',
+  `process` varchar(255) DEFAULT NULL COMMENT '工艺',
+  `mobile` varchar(255) DEFAULT NULL COMMENT '联系方式',
+  `address` varchar(255) DEFAULT NULL COMMENT '地址',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='外协列表';
+
+-- ----------------------------
+-- Table structure for mes_outstock
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_outstock`;
+CREATE TABLE `mes_outstock` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '物料',
+  `unit_id` bigint(20) DEFAULT NULL COMMENT '出库单位',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '来源',
+  `count` decimal(10,4) DEFAULT NULL COMMENT '数量',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转码',
+  `task_id` bigint(20) DEFAULT NULL COMMENT '任务关联',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `laststock` decimal(10,4) DEFAULT '0.0000' COMMENT '上次结存',
+  `remark1` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='出库管理';
+
+-- ----------------------------
+-- Table structure for mes_pre
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_pre`;
+CREATE TABLE `mes_pre` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `leave_type` varchar(255) DEFAULT NULL COMMENT '请假类型',
+  `tilte` varchar(255) DEFAULT NULL COMMENT '名称',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编号',
+  `gk` varchar(255) DEFAULT NULL COMMENT '规格',
+  `start_date` datetime DEFAULT NULL COMMENT '开始时间',
+  `end_date` datetime DEFAULT NULL COMMENT '结束时间',
+  `leave_days` int(10) DEFAULT NULL COMMENT '请假天数',
+  `remark` varchar(255) DEFAULT NULL COMMENT '请假原因',
+  `status` varchar(255) DEFAULT NULL COMMENT '状态',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `rem` varchar(255) DEFAULT NULL COMMENT '理由',
+  `jj` varchar(255) DEFAULT NULL COMMENT '拒绝人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='采购审核';
+
+-- ----------------------------
+-- Table structure for mes_price_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_price_rec`;
+CREATE TABLE `mes_price_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '商品',
+  `count` int(11) DEFAULT NULL COMMENT '当时数量',
+  `prices` decimal(10,4) DEFAULT NULL COMMENT '价格',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='价格波动';
+
+-- ----------------------------
+-- Table structure for mes_primark
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_primark`;
+CREATE TABLE `mes_primark` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `workid` bigint(20) DEFAULT NULL COMMENT '工作id',
+  `orderid` bigint(20) DEFAULT NULL COMMENT '订单号',
+  `subtime` varchar(255) DEFAULT NULL COMMENT '交货日期',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转码',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料码',
+  `banci` varchar(255) DEFAULT NULL COMMENT '版次',
+  `wul` int(10) DEFAULT NULL COMMENT '批次',
+  `counts` decimal(10,4) DEFAULT NULL COMMENT '数量',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='打单列表';
+
+-- ----------------------------
+-- Table structure for mes_pro_type
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_pro_type`;
+CREATE TABLE `mes_pro_type` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) DEFAULT NULL COMMENT '标题',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物料类别';
+
+-- ----------------------------
+-- Table structure for mes_process
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_process`;
+CREATE TABLE `mes_process` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `type_id` bigint(20) DEFAULT NULL COMMENT '类别',
+  `standards` varchar(255) DEFAULT NULL COMMENT '标准',
+  `refvalue` varchar(255) DEFAULT NULL COMMENT '浮动',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `moneytype` int(10) DEFAULT '0' COMMENT '计件',
+  `moneyprice` decimal(10,2) DEFAULT '1.00' COMMENT '单价',
+  `userids` longtext COMMENT '用户',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工艺管理';
+
+-- ----------------------------
+-- Table structure for mes_process_type
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_process_type`;
+CREATE TABLE `mes_process_type` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工艺类别';
+
+-- ----------------------------
+-- Table structure for mes_procurementplan
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_procurementplan`;
+CREATE TABLE `mes_procurementplan` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转号',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '产品',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `unit_id` bigint(20) DEFAULT NULL COMMENT '单位',
+  `work_id` bigint(20) DEFAULT NULL COMMENT '任务主表',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `remark2` varchar(255) DEFAULT NULL,
+  `prices` decimal(10,2) DEFAULT NULL COMMENT '单价',
+  `fromtype` varchar(255) DEFAULT NULL COMMENT '品类',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='采购计划';
+
+-- ----------------------------
+-- Table structure for mes_product
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_product`;
+CREATE TABLE `mes_product` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `unit_id` bigint(20) DEFAULT NULL COMMENT '单位',
+  `protype_id` bigint(20) DEFAULT NULL COMMENT '类别',
+  `bcount` decimal(10,4) DEFAULT NULL COMMENT '下级组成件数量',
+  `pid` bigint(20) DEFAULT NULL COMMENT '组成件',
+  `stock_id` bigint(20) DEFAULT NULL COMMENT '库存单位',
+  `stock` decimal(11,4) DEFAULT '0.0000' COMMENT '库存量',
+  `ver` int(10) DEFAULT NULL COMMENT '版本',
+  `weight` decimal(10,4) DEFAULT NULL COMMENT '重量',
+  `need_count` int(10) DEFAULT NULL COMMENT '需求数量',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` char(1) DEFAULT '0' COMMENT '是否自制件',
+  `grow` int(11) DEFAULT NULL COMMENT '与主单位进率',
+  `iswarning` int(3) DEFAULT '0' COMMENT '是否警戒',
+  `warningnum` int(11) DEFAULT '0' COMMENT '预警值',
+  `quacount` int(11) DEFAULT '0' COMMENT '质检次数',
+  `stocks` bigint(20) DEFAULT NULL COMMENT '库存',
+  `imgs` longtext COMMENT '图片',
+  `colors` varchar(255) DEFAULT NULL COMMENT '颜色',
+  `stime` decimal(10,4) DEFAULT NULL,
+  `prices` decimal(10,4) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='产品管理';
+
+-- ----------------------------
+-- Table structure for mes_prosetting
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_prosetting`;
+CREATE TABLE `mes_prosetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `workshop_id` varchar(255) DEFAULT NULL COMMENT '工作站',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '物料',
+  `process_id` varchar(255) DEFAULT NULL COMMENT '工序',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `istruec` tinyint(3) DEFAULT NULL COMMENT '是否工艺柳总',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1893964564922781698 DEFAULT CHARSET=utf8mb4 COMMENT='排程设置';
+
+-- ----------------------------
+-- Table structure for mes_prosettingzp
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_prosettingzp`;
+CREATE TABLE `mes_prosettingzp` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `workshop_id` varchar(255) DEFAULT NULL COMMENT '工作站',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '物料',
+  `zpcount` int(11) DEFAULT NULL COMMENT '需组装数量',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `istruec` tinyint(3) DEFAULT NULL COMMENT '是否工艺流转',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1889614816222240771 DEFAULT CHARSET=utf8mb4 COMMENT='组装排程';
+
+-- ----------------------------
+-- Table structure for mes_protype
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_protype`;
+CREATE TABLE `mes_protype` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) NOT NULL COMMENT '标题',
+  `pid` bigint(20) DEFAULT NULL COMMENT '上级',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='产品类别';
+
+-- ----------------------------
+-- Table structure for mes_qua_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_qua_rec`;
+CREATE TABLE `mes_qua_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `qua_mian` bigint(20) DEFAULT NULL COMMENT '质检主键',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转号',
+  `title` varchar(255) DEFAULT NULL COMMENT '标题',
+  `task_id` bigint(20) DEFAULT NULL COMMENT '任务列表',
+  `valuest` varchar(255) DEFAULT NULL COMMENT '值',
+  `res` varchar(255) DEFAULT NULL COMMENT '结果',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='质检列表';
+
+-- ----------------------------
+-- Table structure for mes_quaform
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_quaform`;
+CREATE TABLE `mes_quaform` (
+  `id` bigint(20) NOT NULL COMMENT '编码',
+  `proid` bigint(20) DEFAULT NULL COMMENT '产品',
+  `sn` varchar(255) DEFAULT NULL COMMENT '批次',
+  `title` varchar(255) DEFAULT NULL COMMENT '标题',
+  `resu` varchar(255) DEFAULT NULL COMMENT '结果',
+  `instock` varchar(255) DEFAULT NULL COMMENT '是否入库',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='来料检';
+
+-- ----------------------------
+-- Table structure for mes_quality_list
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_quality_list`;
+CREATE TABLE `mes_quality_list` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `qualitymain_id` bigint(20) DEFAULT NULL COMMENT '关联主表',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `standards` varchar(255) DEFAULT NULL COMMENT '标准',
+  `refvalue` varchar(255) DEFAULT NULL COMMENT '公差',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='质检内容';
+
+-- ----------------------------
+-- Table structure for mes_quality_main
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_quality_main`;
+CREATE TABLE `mes_quality_main` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '质检名称',
+  `other` varchar(255) DEFAULT NULL COMMENT '别名',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for mes_saleout
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_saleout`;
+CREATE TABLE `mes_saleout` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `orderid` bigint(20) NOT NULL COMMENT '订单',
+  `stockid` bigint(20) NOT NULL COMMENT '物流',
+  `counts` int(10) NOT NULL COMMENT '数量',
+  `files` text COMMENT '文件',
+  `wuliu` bigint(20) DEFAULT NULL COMMENT '物流信息',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编码',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='销售出库';
+
+-- ----------------------------
+-- Table structure for mes_stinfo
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_stinfo`;
+CREATE TABLE `mes_stinfo` (
+  `id` bigint(20) NOT NULL COMMENT '编码',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `stocktypeid` bigint(20) DEFAULT NULL COMMENT '库位',
+  `counts` decimal(10,4) DEFAULT NULL COMMENT '数量',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库位详情';
+
+-- ----------------------------
+-- Table structure for mes_stock
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_stock`;
+CREATE TABLE `mes_stock` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `tilte` varchar(255) DEFAULT NULL COMMENT '名称',
+  `warnnum` decimal(10,4) DEFAULT '0.0000' COMMENT '报警',
+  `type` varchar(255) DEFAULT NULL COMMENT '完成度',
+  `otype` varchar(255) DEFAULT NULL COMMENT '品类',
+  `iid` varchar(255) DEFAULT NULL COMMENT '图号',
+  `sn` varchar(100) DEFAULT NULL COMMENT '库存编码',
+  `custid` longtext COMMENT '供应商',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '库存信息',
+  `instock` decimal(10,4) DEFAULT '0.0000' COMMENT '总入库',
+  `outstock` decimal(10,4) DEFAULT '0.0000' COMMENT '总出库',
+  `nowstock` decimal(10,4) DEFAULT NULL COMMENT '当前库存',
+  `unitid` bigint(20) DEFAULT NULL COMMENT '单位',
+  `gk` varchar(255) DEFAULT NULL COMMENT '规格',
+  `proid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `pcount` int(11) DEFAULT '0' COMMENT '入库批次',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `pricein` decimal(10,4) DEFAULT '0.0000' COMMENT '进货价',
+  `pricesale` decimal(10,4) DEFAULT '0.0000' COMMENT '销售价',
+  `sales` tinyint(3) DEFAULT '0' COMMENT '收否售卖',
+  `kwrec` longtext COMMENT '历史库位 ',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='仓库信息';
+
+-- ----------------------------
+-- Table structure for mes_stock_type
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_stock_type`;
+CREATE TABLE `mes_stock_type` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `descs` varchar(255) DEFAULT NULL COMMENT '位置',
+  `looptime` datetime DEFAULT NULL COMMENT '最后移动时间',
+  `counts` int(11) DEFAULT NULL COMMENT '移动次数',
+  `sn` varchar(255) DEFAULT NULL COMMENT '货架编码',
+  `pid` bigint(20) DEFAULT NULL COMMENT '上级',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `kwid` bigint(20) DEFAULT NULL COMMENT '库位信息',
+  `kwsn` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库存分类';
+
+-- ----------------------------
+-- Table structure for mes_stocktaking
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_stocktaking`;
+CREATE TABLE `mes_stocktaking` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `stockid` bigint(20) DEFAULT NULL COMMENT '物料',
+  `stocktypeid` bigint(20) DEFAULT NULL COMMENT '库位',
+  `counts` decimal(10,4) DEFAULT NULL COMMENT '盘查数量',
+  `yccounts` decimal(10,4) DEFAULT NULL COMMENT '异常数量',
+  `ycrec` varchar(255) DEFAULT NULL COMMENT '异常原因',
+  `jc` decimal(10,4) DEFAULT NULL COMMENT '结存量',
+  `status` char(1) DEFAULT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库位盘点';
+
+-- ----------------------------
+-- Table structure for mes_task
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_task`;
+CREATE TABLE `mes_task` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转批次号',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '产品',
+  `workplace_id` bigint(20) DEFAULT NULL COMMENT '工作站',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `needcount` int(11) DEFAULT NULL COMMENT '所需数量',
+  `markcount` int(11) DEFAULT NULL COMMENT '生产数量',
+  `okprocess` int(11) DEFAULT '0' COMMENT '完成工序',
+  `scrapcount` int(11) DEFAULT NULL COMMENT '报废数量',
+  `is_check` int(11) DEFAULT '0' COMMENT '全部质检次数',
+  `currproid` bigint(20) DEFAULT NULL COMMENT '流程id',
+  `currprocess` int(11) DEFAULT NULL COMMENT '当前流程',
+  `allprocess` int(11) DEFAULT NULL COMMENT '所有工序',
+  `redoingcount` int(11) DEFAULT NULL COMMENT '返工数量',
+  `redoingid` bigint(20) DEFAULT NULL COMMENT '返工id',
+  `is_top` tinyint(3) DEFAULT NULL COMMENT '是否加急',
+  `work_id` bigint(20) DEFAULT NULL COMMENT '主表id',
+  `type` varchar(100) DEFAULT NULL COMMENT '类型',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `enough` int(5) DEFAULT '1' COMMENT '是否够量',
+  `stocknum` int(11) DEFAULT '0' COMMENT '需出库数量',
+  `outstocknum` int(11) DEFAULT '0' COMMENT '出库数量',
+  `checknum` int(11) DEFAULT '0' COMMENT '当前质检次数',
+  `ischecknew` int(3) DEFAULT '0' COMMENT '是否通过质检',
+  `worktype` int(11) DEFAULT '0' COMMENT '流转类型',
+  `remark2` varchar(255) DEFAULT NULL COMMENT '备注',
+  `procure` int(11) DEFAULT '0' COMMENT '是否采购完成',
+  `resu` int(11) DEFAULT '0' COMMENT '结果确认',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for mes_taskc
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_taskc`;
+CREATE TABLE `mes_taskc` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转批次号',
+  `pro_id` bigint(20) DEFAULT NULL COMMENT '产品',
+  `workplace_id` bigint(20) DEFAULT NULL COMMENT '工作站',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `needcount` int(11) DEFAULT '0' COMMENT '所需数量',
+  `markcount` int(11) DEFAULT '0' COMMENT '生产数量',
+  `okprocess` int(11) DEFAULT '0' COMMENT '完成工序',
+  `scrapcount` int(11) DEFAULT '0' COMMENT '报废数量',
+  `is_check` int(11) DEFAULT '0' COMMENT '质检次数',
+  `currproid` bigint(20) DEFAULT NULL COMMENT '流程id',
+  `currprocess` int(11) DEFAULT '0' COMMENT '当前流程',
+  `allprocess` int(11) DEFAULT '0' COMMENT '所有工序',
+  `redoingcount` int(11) DEFAULT '0' COMMENT '返工数量',
+  `redoingid` int(11) DEFAULT NULL COMMENT '返工id',
+  `is_top` tinyint(3) DEFAULT NULL COMMENT '是否加急',
+  `work_id` bigint(20) DEFAULT NULL COMMENT '主表id',
+  `type` varchar(100) DEFAULT NULL COMMENT '类型',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（1正常 2进行中 3已完成 0异常完工,4待检查）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `enough` int(5) DEFAULT '1' COMMENT '是否够量',
+  `stocknum` int(11) DEFAULT '0' COMMENT '需出库数量',
+  `outstocknum` int(11) DEFAULT '0' COMMENT '出库数量',
+  `checknum` int(11) DEFAULT '0' COMMENT '质检次数',
+  `ischecknew` int(3) DEFAULT '0' COMMENT '是否通过质检',
+  `worktype` int(11) DEFAULT '0' COMMENT '流转类型',
+  `remark2` varchar(255) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='组装流转';
+
+-- ----------------------------
+-- Table structure for mes_teams
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_teams`;
+CREATE TABLE `mes_teams` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `useids` longtext COMMENT '组员',
+  `upids` longtext COMMENT '班组长',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='班组管理';
+
+-- ----------------------------
+-- Table structure for mes_tmodel
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_tmodel`;
+CREATE TABLE `mes_tmodel` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `title` varchar(255) DEFAULT NULL COMMENT '名称',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编码',
+  `brand` varchar(255) DEFAULT NULL COMMENT '品牌',
+  `otype` varchar(10) DEFAULT NULL COMMENT '类别',
+  `stocknum` int(11) DEFAULT NULL COMMENT '当前库存',
+  `local` varchar(255) DEFAULT NULL COMMENT '位置',
+  `gk` varchar(255) DEFAULT NULL COMMENT '规格',
+  `descs` varchar(255) DEFAULT NULL COMMENT '描述',
+  `stockrec` int(11) DEFAULT NULL COMMENT '历史库存',
+  `otstock` int(11) DEFAULT NULL COMMENT '报废库存',
+  `usestock` int(11) DEFAULT NULL COMMENT '使用中数量',
+  `otime` datetime DEFAULT NULL COMMENT '保养周期',
+  `nexttime` datetime DEFAULT NULL COMMENT '下次周期',
+  `instock` int(11) DEFAULT NULL COMMENT '可用库存量',
+  `status` char(1) DEFAULT NULL COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `markcount` int(11) DEFAULT NULL COMMENT '已加工数量',
+  `proids` varchar(255) DEFAULT NULL COMMENT '加工产品',
+  `names` varchar(255) DEFAULT NULL COMMENT '刀具名称',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模具管理';
+
+-- ----------------------------
+-- Table structure for mes_tool_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_tool_rec`;
+CREATE TABLE `mes_tool_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `toolid` bigint(11) DEFAULT NULL COMMENT '主表',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `rebak` varchar(255) DEFAULT NULL COMMENT '原因',
+  `type` char(1) DEFAULT NULL COMMENT '状态',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `work_id` varchar(500) DEFAULT NULL COMMENT '工作中',
+  `use_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='夹具记录';
+
+-- ----------------------------
+-- Table structure for mes_tool_use
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_tool_use`;
+CREATE TABLE `mes_tool_use` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `toolid` bigint(11) DEFAULT NULL COMMENT '主表',
+  `count` int(11) DEFAULT NULL COMMENT '数量',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `rebak` varchar(255) DEFAULT NULL COMMENT '原因',
+  `type` char(1) DEFAULT NULL COMMENT '状态',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `work_id` varchar(500) DEFAULT NULL COMMENT '工作中',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='夹具使用';
+
+-- ----------------------------
+-- Table structure for mes_unitmeasure
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_unitmeasure`;
+CREATE TABLE `mes_unitmeasure` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `unitsn` varchar(50) NOT NULL COMMENT '单位编码',
+  `title` varchar(50) DEFAULT NULL COMMENT '名称',
+  `is_main` char(1) NOT NULL COMMENT '是否主单位',
+  `grow` int(10) DEFAULT NULL COMMENT '进率',
+  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计量单位';
+
+-- ----------------------------
+-- Table structure for mes_work
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_work`;
+CREATE TABLE `mes_work` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编码',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `fromtype` int(3) DEFAULT NULL COMMENT '来源类型',
+  `pro_id` bigint(20) NOT NULL COMMENT '产品关联',
+  `neednum` int(5) DEFAULT '0' COMMENT '所需数量',
+  `currnum` int(5) DEFAULT '0' COMMENT '当前数量',
+  `isturn` int(11) DEFAULT '0' COMMENT '是否流转（1为流转',
+  `processcount` int(11) DEFAULT '0' COMMENT '工艺数量',
+  `checkcount` int(11) DEFAULT '0' COMMENT '质检次数',
+  `istop` int(5) DEFAULT '0' COMMENT '是否加急',
+  `endtime` varchar(100) DEFAULT NULL COMMENT '需求日期',
+  `currprocess` longtext COMMENT '当前工序',
+  `okprocess` int(11) DEFAULT '0' COMMENT '完成工序',
+  `orderid` bigint(20) DEFAULT NULL COMMENT '关联订单号',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `ismrp` char(1) DEFAULT '0' COMMENT '是否与库存比较',
+  `wul` int(10) DEFAULT '0' COMMENT '物料打印次数',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `id` (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='生产派单';
+
+-- ----------------------------
+-- Table structure for mes_work_rec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_work_rec`;
+CREATE TABLE `mes_work_rec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `task_id` bigint(20) DEFAULT NULL COMMENT '任务id',
+  `lastcount` int(11) DEFAULT NULL COMMENT '已完成数量',
+  `count` int(11) DEFAULT NULL COMMENT '报工数量',
+  `defective` int(11) DEFAULT '0' COMMENT '不良品',
+  `sort` int(10) DEFAULT NULL COMMENT '排序',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1进行中 2已完成 3异常完工）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `mustbe` int(10) DEFAULT NULL COMMENT '是否关键工序',
+  `proid` bigint(20) DEFAULT NULL COMMENT '产品',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工作记录表';
+
+-- ----------------------------
+-- Table structure for mes_workplace
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_workplace`;
+CREATE TABLE `mes_workplace` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) DEFAULT NULL COMMENT '车间编码',
+  `title` varchar(100) NOT NULL COMMENT '车间名称',
+  `area` varchar(50) DEFAULT NULL COMMENT '面积',
+  `curator` bigint(20) DEFAULT NULL COMMENT '负责人',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='车间';
+
+-- ----------------------------
+-- Table structure for mes_workplaces
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_workplaces`;
+CREATE TABLE `mes_workplaces` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '编码',
+  `title` varchar(100) CHARACTER SET utf8mb4 NOT NULL COMMENT '标题',
+  `workshop_id` bigint(20) DEFAULT NULL COMMENT '车间ID',
+  `equ_ids` longtext COMMENT '设备',
+  `teams` longtext COMMENT '班组',
+  `tongs_ids` longtext COMMENT '夹具',
+  `process_ids` longtext COMMENT '工序',
+  `counts` int(10) DEFAULT NULL COMMENT '数量',
+  `status` char(1) CHARACTER SET utf8mb4 NOT NULL DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) CHARACTER SET utf8mb4 DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='工作站';
+
+-- ----------------------------
+-- Table structure for mes_wuliu
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_wuliu`;
+CREATE TABLE `mes_wuliu` (
+  `id` bigint(20) NOT NULL COMMENT '编号',
+  `sn` varchar(255) DEFAULT NULL COMMENT '物流号',
+  `cname` varchar(255) DEFAULT NULL COMMENT '名称',
+  `phone` varchar(255) DEFAULT NULL COMMENT '联系方式',
+  `conts` varchar(255) DEFAULT NULL COMMENT '信息',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物流信息';
+
+-- ----------------------------
+-- Table structure for mes_ycrec
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_ycrec`;
+CREATE TABLE `mes_ycrec` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `sn` varchar(255) DEFAULT NULL COMMENT '流转',
+  `count` int(11) DEFAULT NULL COMMENT '正常数量',
+  `imgs` varchar(255) DEFAULT NULL COMMENT '图片',
+  `yccount` int(11) DEFAULT NULL COMMENT '异常数量',
+  `ycdesc` varchar(255) DEFAULT NULL COMMENT '描述',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户',
+  `status` char(1) DEFAULT '0' COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `tenant_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='异常审核';
+
+-- ----------------------------
+-- Table structure for mes_zzin
+-- ----------------------------
+DROP TABLE IF EXISTS `mes_zzin`;
+CREATE TABLE `mes_zzin` (
+  `id` bigint(20) NOT NULL,
+  `stockid` bigint(20) DEFAULT NULL,
+  `mainid` bigint(20) DEFAULT NULL,
+  `counts` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组装入库';
+
+-- ----------------------------
+-- Table structure for sj_distributed_lock
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_distributed_lock`;
+CREATE TABLE `sj_distributed_lock` (
+  `name` varchar(64) NOT NULL COMMENT '锁名称',
+  `lock_until` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '锁定时长',
+  `locked_at` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '锁定时间',
+  `locked_by` varchar(255) NOT NULL COMMENT '锁定者',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='锁定表';
+
+-- ----------------------------
+-- Table structure for sj_group_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_group_config`;
+CREATE TABLE `sj_group_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL DEFAULT '' COMMENT '组名称',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '组描述',
+  `token` varchar(64) NOT NULL DEFAULT 'SJ_cKqBTPzCsWA3VyuCfFoccmuIEGXjr5KT' COMMENT 'token',
+  `group_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '组状态 0、未启用 1、启用',
+  `version` int(11) NOT NULL COMMENT '版本号',
+  `group_partition` int(11) NOT NULL COMMENT '分区',
+  `id_generator_mode` tinyint(4) NOT NULL DEFAULT '1' COMMENT '唯一id生成模式 默认号段模式',
+  `init_scene` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否初始化场景 0:否 1:是',
+  `bucket_index` int(11) NOT NULL DEFAULT '0' COMMENT 'bucket',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='组配置';
+
+-- ----------------------------
+-- Table structure for sj_job
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_job`;
+CREATE TABLE `sj_job` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `job_name` varchar(64) NOT NULL COMMENT '名称',
+  `args_str` text COMMENT '执行方法参数',
+  `args_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '参数类型 ',
+  `next_trigger_at` bigint(13) NOT NULL COMMENT '下次触发时间',
+  `job_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '任务状态 0、关闭、1、开启',
+  `task_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '任务类型 1、集群 2、广播 3、切片',
+  `route_key` tinyint(4) NOT NULL DEFAULT '4' COMMENT '路由策略',
+  `executor_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '执行器类型',
+  `executor_info` varchar(255) DEFAULT NULL COMMENT '执行器名称',
+  `trigger_type` tinyint(4) NOT NULL COMMENT '触发类型 1.CRON 表达式 2. 固定时间',
+  `trigger_interval` varchar(255) NOT NULL COMMENT '间隔时长',
+  `block_strategy` tinyint(4) NOT NULL DEFAULT '1' COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行',
+  `executor_timeout` int(11) NOT NULL DEFAULT '0' COMMENT '任务执行超时时间，单位秒',
+  `max_retry_times` int(11) NOT NULL DEFAULT '0' COMMENT '最大重试次数',
+  `parallel_num` int(11) NOT NULL DEFAULT '1' COMMENT '并行数',
+  `retry_interval` int(11) NOT NULL DEFAULT '0' COMMENT '重试间隔(s)',
+  `bucket_index` int(11) NOT NULL DEFAULT '0' COMMENT 'bucket',
+  `resident` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否是常驻任务',
+  `notify_ids` varchar(128) NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
+  `owner_id` bigint(20) DEFAULT NULL COMMENT '负责人id',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE,
+  KEY `idx_job_status_bucket_index` (`job_status`,`bucket_index`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='任务信息';
+
+-- ----------------------------
+-- Table structure for sj_job_log_message
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_job_log_message`;
+CREATE TABLE `sj_job_log_message` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `job_id` bigint(20) NOT NULL COMMENT '任务信息id',
+  `task_batch_id` bigint(20) NOT NULL COMMENT '任务批次id',
+  `task_id` bigint(20) NOT NULL COMMENT '调度任务id',
+  `message` longtext NOT NULL COMMENT '调度信息',
+  `log_num` int(11) NOT NULL DEFAULT '1' COMMENT '日志数量',
+  `real_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '上报时间',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_task_batch_id_task_id` (`task_batch_id`,`task_id`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COMMENT='调度日志';
+
+-- ----------------------------
+-- Table structure for sj_job_summary
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_job_summary`;
+CREATE TABLE `sj_job_summary` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL DEFAULT '' COMMENT '组名称',
+  `business_id` bigint(20) NOT NULL COMMENT '业务id (job_id或workflow_id)',
+  `system_task_type` tinyint(4) NOT NULL DEFAULT '3' COMMENT '任务类型 3、JOB任务 4、WORKFLOW任务',
+  `trigger_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '统计时间',
+  `success_num` int(11) NOT NULL DEFAULT '0' COMMENT '执行成功-日志数量',
+  `fail_num` int(11) NOT NULL DEFAULT '0' COMMENT '执行失败-日志数量',
+  `fail_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '失败原因',
+  `stop_num` int(11) NOT NULL DEFAULT '0' COMMENT '执行失败-日志数量',
+  `stop_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '失败原因',
+  `cancel_num` int(11) NOT NULL DEFAULT '0' COMMENT '执行失败-日志数量',
+  `cancel_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '失败原因',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_trigger_at_system_task_type_business_id` (`trigger_at`,`system_task_type`,`business_id`) USING BTREE,
+  KEY `idx_namespace_id_group_name_business_id` (`namespace_id`,`group_name`,`business_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='DashBoard_Job';
+
+-- ----------------------------
+-- Table structure for sj_job_task
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_job_task`;
+CREATE TABLE `sj_job_task` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `job_id` bigint(20) NOT NULL COMMENT '任务信息id',
+  `task_batch_id` bigint(20) NOT NULL COMMENT '调度任务id',
+  `parent_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '父执行器id',
+  `task_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '执行的状态 0、失败 1、成功',
+  `retry_count` int(11) NOT NULL DEFAULT '0' COMMENT '重试次数',
+  `mr_stage` tinyint(4) DEFAULT NULL COMMENT '动态分片所处阶段 1:map 2:reduce 3:mergeReduce',
+  `leaf` tinyint(4) NOT NULL DEFAULT '1' COMMENT '叶子节点',
+  `task_name` varchar(255) NOT NULL DEFAULT '' COMMENT '任务名称',
+  `client_info` varchar(128) DEFAULT NULL COMMENT '客户端地址 clientId#ip:port',
+  `wf_context` text COMMENT '工作流全局上下文',
+  `result_message` text NOT NULL COMMENT '执行结果',
+  `args_str` text COMMENT '执行方法参数',
+  `args_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '参数类型 ',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_task_batch_id_task_status` (`task_batch_id`,`task_status`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8mb4 COMMENT='任务实例';
+
+-- ----------------------------
+-- Table structure for sj_job_task_batch
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_job_task_batch`;
+CREATE TABLE `sj_job_task_batch` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `job_id` bigint(20) NOT NULL COMMENT '任务id',
+  `workflow_node_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '工作流节点id',
+  `parent_workflow_node_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '工作流任务父批次id',
+  `workflow_task_batch_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '工作流任务批次id',
+  `task_batch_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '任务批次状态 0、失败 1、成功',
+  `operation_reason` tinyint(4) NOT NULL DEFAULT '0' COMMENT '操作原因',
+  `execution_at` bigint(13) NOT NULL DEFAULT '0' COMMENT '任务执行时间',
+  `system_task_type` tinyint(4) NOT NULL DEFAULT '3' COMMENT '任务类型 3、JOB任务 4、WORKFLOW任务',
+  `parent_id` varchar(64) NOT NULL DEFAULT '' COMMENT '父节点',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_job_id_task_batch_status` (`job_id`,`task_batch_status`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE,
+  KEY `idx_workflow_task_batch_id_workflow_node_id` (`workflow_task_batch_id`,`workflow_node_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COMMENT='任务批次';
+
+-- ----------------------------
+-- Table structure for sj_namespace
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_namespace`;
+CREATE TABLE `sj_namespace` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(64) NOT NULL COMMENT '名称',
+  `unique_id` varchar(64) NOT NULL COMMENT '唯一id',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_unique_id` (`unique_id`) USING BTREE,
+  KEY `idx_name` (`name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='命名空间';
+
+-- ----------------------------
+-- Table structure for sj_notify_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_notify_config`;
+CREATE TABLE `sj_notify_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `notify_name` varchar(64) NOT NULL DEFAULT '' COMMENT '通知名称',
+  `system_task_type` tinyint(4) NOT NULL DEFAULT '3' COMMENT '任务类型 1. 重试任务 2. 重试回调 3、JOB任务 4、WORKFLOW任务',
+  `notify_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '通知状态 0、未启用 1、启用',
+  `recipient_ids` varchar(128) NOT NULL COMMENT '接收人id列表',
+  `notify_threshold` int(11) NOT NULL DEFAULT '0' COMMENT '通知阈值',
+  `notify_scene` tinyint(4) NOT NULL DEFAULT '0' COMMENT '通知场景',
+  `rate_limiter_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '限流状态 0、未启用 1、启用',
+  `rate_limiter_threshold` int(11) NOT NULL DEFAULT '0' COMMENT '每秒限流阈值',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知配置';
+
+-- ----------------------------
+-- Table structure for sj_notify_recipient
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_notify_recipient`;
+CREATE TABLE `sj_notify_recipient` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `recipient_name` varchar(64) NOT NULL COMMENT '接收人名称',
+  `notify_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '通知类型 1、钉钉 2、邮件 3、企业微信 4 飞书 5 webhook',
+  `notify_attribute` varchar(512) NOT NULL COMMENT '配置属性',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_namespace_id` (`namespace_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='告警通知接收人';
+
+-- ----------------------------
+-- Table structure for sj_retry_dead_letter_0
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_dead_letter_0`;
+CREATE TABLE `sj_retry_dead_letter_0` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `unique_id` varchar(64) NOT NULL COMMENT '同组下id唯一',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `scene_name` varchar(64) NOT NULL COMMENT '场景名称',
+  `idempotent_id` varchar(64) NOT NULL COMMENT '幂等id',
+  `biz_no` varchar(64) NOT NULL DEFAULT '' COMMENT '业务编号',
+  `executor_name` varchar(512) NOT NULL DEFAULT '' COMMENT '执行器名称',
+  `args_str` text NOT NULL COMMENT '执行方法参数',
+  `ext_attrs` text NOT NULL COMMENT '扩展字段',
+  `task_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '任务类型 1、重试数据 2、回调数据',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_namespace_id_group_name_unique_id` (`namespace_id`,`group_name`,`unique_id`) USING BTREE,
+  KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`,`group_name`,`scene_name`) USING BTREE,
+  KEY `idx_idempotent_id` (`idempotent_id`) USING BTREE,
+  KEY `idx_biz_no` (`biz_no`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='死信队列表';
+
+-- ----------------------------
+-- Table structure for sj_retry_scene_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_scene_config`;
+CREATE TABLE `sj_retry_scene_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `scene_name` varchar(64) NOT NULL COMMENT '场景名称',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `scene_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '组状态 0、未启用 1、启用',
+  `max_retry_count` int(11) NOT NULL DEFAULT '5' COMMENT '最大重试次数',
+  `back_off` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1、默认等级 2、固定间隔时间 3、CRON 表达式',
+  `trigger_interval` varchar(16) NOT NULL DEFAULT '' COMMENT '间隔时长',
+  `notify_ids` varchar(128) NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
+  `deadline_request` bigint(20) unsigned NOT NULL DEFAULT '60000' COMMENT 'Deadline Request 调用链超时 单位毫秒',
+  `executor_timeout` int(11) unsigned NOT NULL DEFAULT '5' COMMENT '任务执行超时时间，单位秒',
+  `route_key` tinyint(4) NOT NULL DEFAULT '4' COMMENT '路由策略',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_namespace_id_group_name_scene_name` (`namespace_id`,`group_name`,`scene_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='场景配置';
+
+-- ----------------------------
+-- Table structure for sj_retry_summary
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_summary`;
+CREATE TABLE `sj_retry_summary` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL DEFAULT '' COMMENT '组名称',
+  `scene_name` varchar(50) NOT NULL DEFAULT '' COMMENT '场景名称',
+  `trigger_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '统计时间',
+  `running_num` int(11) NOT NULL DEFAULT '0' COMMENT '重试中-日志数量',
+  `finish_num` int(11) NOT NULL DEFAULT '0' COMMENT '重试完成-日志数量',
+  `max_count_num` int(11) NOT NULL DEFAULT '0' COMMENT '重试到达最大次数-日志数量',
+  `suspend_num` int(11) NOT NULL DEFAULT '0' COMMENT '暂停重试-日志数量',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_scene_name_trigger_at` (`namespace_id`,`group_name`,`scene_name`,`trigger_at`) USING BTREE,
+  KEY `idx_trigger_at` (`trigger_at`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='DashBoard_Retry';
+
+-- ----------------------------
+-- Table structure for sj_retry_task_0
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_task_0`;
+CREATE TABLE `sj_retry_task_0` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `unique_id` varchar(64) NOT NULL COMMENT '同组下id唯一',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `scene_name` varchar(64) NOT NULL COMMENT '场景名称',
+  `idempotent_id` varchar(64) NOT NULL COMMENT '幂等id',
+  `biz_no` varchar(64) NOT NULL DEFAULT '' COMMENT '业务编号',
+  `executor_name` varchar(512) NOT NULL DEFAULT '' COMMENT '执行器名称',
+  `args_str` text NOT NULL COMMENT '执行方法参数',
+  `ext_attrs` text NOT NULL COMMENT '扩展字段',
+  `next_trigger_at` datetime NOT NULL COMMENT '下次触发时间',
+  `retry_count` int(11) NOT NULL DEFAULT '0' COMMENT '重试次数',
+  `retry_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '重试状态 0、重试中 1、成功 2、最大重试次数',
+  `task_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '任务类型 1、重试数据 2、回调数据',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_name_unique_id` (`namespace_id`,`group_name`,`unique_id`) USING BTREE,
+  KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`,`group_name`,`scene_name`) USING BTREE,
+  KEY `idx_namespace_id_group_name_task_type` (`namespace_id`,`group_name`,`task_type`) USING BTREE,
+  KEY `idx_namespace_id_group_name_retry_status` (`namespace_id`,`group_name`,`retry_status`) USING BTREE,
+  KEY `idx_idempotent_id` (`idempotent_id`) USING BTREE,
+  KEY `idx_biz_no` (`biz_no`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
+
+-- ----------------------------
+-- Table structure for sj_retry_task_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_task_log`;
+CREATE TABLE `sj_retry_task_log` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `unique_id` varchar(64) NOT NULL COMMENT '同组下id唯一',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `scene_name` varchar(64) NOT NULL COMMENT '场景名称',
+  `idempotent_id` varchar(64) NOT NULL COMMENT '幂等id',
+  `biz_no` varchar(64) NOT NULL DEFAULT '' COMMENT '业务编号',
+  `executor_name` varchar(512) NOT NULL DEFAULT '' COMMENT '执行器名称',
+  `args_str` text NOT NULL COMMENT '执行方法参数',
+  `ext_attrs` text NOT NULL COMMENT '扩展字段',
+  `retry_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '重试状态 0、重试中 1、成功 2、最大次数',
+  `task_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '任务类型 1、重试数据 2、回调数据',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_group_name_scene_name` (`namespace_id`,`group_name`,`scene_name`) USING BTREE,
+  KEY `idx_retry_status` (`retry_status`) USING BTREE,
+  KEY `idx_idempotent_id` (`idempotent_id`) USING BTREE,
+  KEY `idx_unique_id` (`unique_id`) USING BTREE,
+  KEY `idx_biz_no` (`biz_no`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务日志基础信息表';
+
+-- ----------------------------
+-- Table structure for sj_retry_task_log_message
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_retry_task_log_message`;
+CREATE TABLE `sj_retry_task_log_message` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `unique_id` varchar(64) NOT NULL COMMENT '同组下id唯一',
+  `message` longtext NOT NULL COMMENT '异常信息',
+  `log_num` int(11) NOT NULL DEFAULT '1' COMMENT '日志数量',
+  `real_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '上报时间',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`,`group_name`,`unique_id`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务调度日志信息记录表';
+
+-- ----------------------------
+-- Table structure for sj_sequence_alloc
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_sequence_alloc`;
+CREATE TABLE `sj_sequence_alloc` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL DEFAULT '' COMMENT '组名称',
+  `max_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '最大id',
+  `step` int(11) NOT NULL DEFAULT '100' COMMENT '步长',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='号段模式序号ID分配表';
+
+-- ----------------------------
+-- Table structure for sj_server_node
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_server_node`;
+CREATE TABLE `sj_server_node` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `host_id` varchar(64) NOT NULL COMMENT '主机id',
+  `host_ip` varchar(64) NOT NULL COMMENT '机器ip',
+  `host_port` int(16) NOT NULL COMMENT '机器端口',
+  `expire_at` datetime NOT NULL COMMENT '过期时间',
+  `node_type` tinyint(4) NOT NULL COMMENT '节点类型 1、客户端 2、是服务端',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_host_id_host_ip` (`host_id`,`host_ip`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE,
+  KEY `idx_expire_at_node_type` (`expire_at`,`node_type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='服务器节点';
+
+-- ----------------------------
+-- Table structure for sj_system_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_system_user`;
+CREATE TABLE `sj_system_user` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `username` varchar(64) NOT NULL COMMENT '账号',
+  `password` varchar(128) NOT NULL COMMENT '密码',
+  `role` tinyint(4) NOT NULL DEFAULT '0' COMMENT '角色：1-普通用户、2-管理员',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_username` (`username`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='系统用户表';
+
+-- ----------------------------
+-- Table structure for sj_system_user_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_system_user_permission`;
+CREATE TABLE `sj_system_user_permission` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `system_user_id` bigint(20) NOT NULL COMMENT '系统用户id',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_namespace_id_group_name_system_user_id` (`namespace_id`,`group_name`,`system_user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统用户权限表';
+
+-- ----------------------------
+-- Table structure for sj_workflow
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_workflow`;
+CREATE TABLE `sj_workflow` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `workflow_name` varchar(64) NOT NULL COMMENT '工作流名称',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `workflow_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '工作流状态 0、关闭、1、开启',
+  `trigger_type` tinyint(4) NOT NULL COMMENT '触发类型 1.CRON 表达式 2. 固定时间',
+  `trigger_interval` varchar(255) NOT NULL COMMENT '间隔时长',
+  `next_trigger_at` bigint(13) NOT NULL COMMENT '下次触发时间',
+  `block_strategy` tinyint(4) NOT NULL DEFAULT '1' COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行',
+  `executor_timeout` int(11) NOT NULL DEFAULT '0' COMMENT '任务执行超时时间，单位秒',
+  `description` varchar(256) NOT NULL DEFAULT '' COMMENT '描述',
+  `flow_info` text COMMENT '流程信息',
+  `wf_context` text COMMENT '上下文',
+  `notify_ids` varchar(128) NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
+  `bucket_index` int(11) NOT NULL DEFAULT '0' COMMENT 'bucket',
+  `version` int(11) NOT NULL COMMENT '版本号',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工作流';
+
+-- ----------------------------
+-- Table structure for sj_workflow_node
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_workflow_node`;
+CREATE TABLE `sj_workflow_node` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `node_name` varchar(64) NOT NULL COMMENT '节点名称',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `job_id` bigint(20) NOT NULL COMMENT '任务信息id',
+  `workflow_id` bigint(20) NOT NULL COMMENT '工作流ID',
+  `node_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1、任务节点 2、条件节点',
+  `expression_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1、SpEl、2、Aviator 3、QL',
+  `fail_strategy` tinyint(4) NOT NULL DEFAULT '1' COMMENT '失败策略 1、跳过 2、阻塞',
+  `workflow_node_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '工作流节点状态 0、关闭、1、开启',
+  `priority_level` int(11) NOT NULL DEFAULT '1' COMMENT '优先级',
+  `node_info` text COMMENT '节点信息 ',
+  `version` int(11) NOT NULL COMMENT '版本号',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工作流节点';
+
+-- ----------------------------
+-- Table structure for sj_workflow_task_batch
+-- ----------------------------
+DROP TABLE IF EXISTS `sj_workflow_task_batch`;
+CREATE TABLE `sj_workflow_task_batch` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `namespace_id` varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+  `group_name` varchar(64) NOT NULL COMMENT '组名称',
+  `workflow_id` bigint(20) NOT NULL COMMENT '工作流任务id',
+  `task_batch_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '任务批次状态 0、失败 1、成功',
+  `operation_reason` tinyint(4) NOT NULL DEFAULT '0' COMMENT '操作原因',
+  `flow_info` text COMMENT '流程信息',
+  `wf_context` text COMMENT '全局上下文',
+  `execution_at` bigint(13) NOT NULL DEFAULT '0' COMMENT '任务执行时间',
+  `ext_attrs` varchar(256) DEFAULT '' COMMENT '扩展字段',
+  `version` int(11) NOT NULL DEFAULT '1' COMMENT '版本号',
+  `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '逻辑删除 1、删除',
+  `create_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_job_id_task_batch_status` (`workflow_id`,`task_batch_status`) USING BTREE,
+  KEY `idx_create_dt` (`create_dt`) USING BTREE,
+  KEY `idx_namespace_id_group_name` (`namespace_id`,`group_name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='工作流批次';
+
+-- ----------------------------
+-- Table structure for sys_client
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_client`;
+CREATE TABLE `sys_client` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `client_id` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '客户端id',
+  `client_key` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '客户端key',
+  `client_secret` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '客户端秘钥',
+  `grant_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '授权类型',
+  `device_type` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '设备类型',
+  `active_timeout` int(11) DEFAULT '1800' COMMENT 'token活跃超时时间',
+  `timeout` int(11) DEFAULT '604800' COMMENT 'token固定超时',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='系统授权表';
+
+-- ----------------------------
+-- Table structure for sys_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `config_id` bigint(20) NOT NULL COMMENT '参数主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `config_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '参数名称',
+  `config_key` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '参数键名',
+  `config_value` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '参数键值',
+  `config_type` char(1) COLLATE utf8_unicode_ci DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`config_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='参数配置表';
+
+-- ----------------------------
+-- Table structure for sys_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dept`;
+CREATE TABLE `sys_dept` (
+  `dept_id` bigint(20) NOT NULL COMMENT '部门id',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父部门id',
+  `ancestors` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '祖级列表',
+  `dept_name` varchar(30) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '部门名称',
+  `dept_category` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '部门类别编码',
+  `order_num` int(4) DEFAULT '0' COMMENT '显示顺序',
+  `leader` bigint(20) DEFAULT NULL COMMENT '负责人',
+  `phone` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '联系电话',
+  `email` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '邮箱',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`dept_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='部门表';
+
+-- ----------------------------
+-- Table structure for sys_dict_data
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_data`;
+CREATE TABLE `sys_dict_data` (
+  `dict_code` bigint(20) NOT NULL COMMENT '字典编码',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `dict_sort` int(4) DEFAULT '0' COMMENT '字典排序',
+  `dict_label` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典标签',
+  `dict_value` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典键值',
+  `dict_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典类型',
+  `css_class` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
+  `list_class` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '表格回显样式',
+  `is_default` char(1) COLLATE utf8_unicode_ci DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`dict_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='字典数据表';
+
+-- ----------------------------
+-- Table structure for sys_dict_type
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_type`;
+CREATE TABLE `sys_dict_type` (
+  `dict_id` bigint(20) NOT NULL COMMENT '字典主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `dict_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典名称',
+  `dict_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '字典类型',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`dict_id`) USING BTREE,
+  UNIQUE KEY `tenant_id` (`tenant_id`,`dict_type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='字典类型表';
+
+-- ----------------------------
+-- Table structure for sys_logininfor
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_logininfor`;
+CREATE TABLE `sys_logininfor` (
+  `info_id` bigint(20) NOT NULL COMMENT '访问ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `user_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '用户账号',
+  `client_key` varchar(32) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '客户端',
+  `device_type` varchar(32) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '设备类型',
+  `ipaddr` varchar(128) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '登录IP地址',
+  `login_location` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '登录地点',
+  `browser` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '浏览器类型',
+  `os` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '操作系统',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+  `msg` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '提示消息',
+  `login_time` datetime DEFAULT NULL COMMENT '访问时间',
+  PRIMARY KEY (`info_id`) USING BTREE,
+  KEY `idx_sys_logininfor_s` (`status`) USING BTREE,
+  KEY `idx_sys_logininfor_lt` (`login_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='系统访问记录';
+
+-- ----------------------------
+-- Table structure for sys_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_menu`;
+CREATE TABLE `sys_menu` (
+  `menu_id` bigint(20) NOT NULL COMMENT '菜单ID',
+  `menu_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '菜单名称',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父菜单ID',
+  `order_num` int(4) DEFAULT '0' COMMENT '显示顺序',
+  `path` varchar(200) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '路由地址',
+  `component` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '组件路径',
+  `query_param` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '路由参数',
+  `is_frame` int(1) DEFAULT '1' COMMENT '是否为外链（0是 1否）',
+  `is_cache` int(1) DEFAULT '0' COMMENT '是否缓存（0缓存 1不缓存）',
+  `menu_type` char(1) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+  `visible` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '显示状态（0显示 1隐藏）',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '菜单状态（0正常 1停用）',
+  `perms` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '权限标识',
+  `icon` varchar(100) COLLATE utf8_unicode_ci DEFAULT '#' COMMENT '菜单图标',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '备注',
+  PRIMARY KEY (`menu_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='菜单权限表';
+
+-- ----------------------------
+-- Table structure for sys_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_notice`;
+CREATE TABLE `sys_notice` (
+  `notice_id` bigint(20) NOT NULL COMMENT '公告ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `notice_title` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '公告标题',
+  `notice_type` char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT '公告类型（1通知 2公告）',
+  `notice_content` longblob COMMENT '公告内容',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`notice_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='通知公告表';
+
+-- ----------------------------
+-- Table structure for sys_oper_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_oper_log`;
+CREATE TABLE `sys_oper_log` (
+  `oper_id` bigint(20) NOT NULL COMMENT '日志主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `title` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '模块标题',
+  `business_type` int(2) DEFAULT '0' COMMENT '业务类型（0其它 1新增 2修改 3删除）',
+  `method` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '方法名称',
+  `request_method` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '请求方式',
+  `operator_type` int(1) DEFAULT '0' COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
+  `oper_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '操作人员',
+  `dept_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '部门名称',
+  `oper_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '请求URL',
+  `oper_ip` varchar(128) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '主机地址',
+  `oper_location` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '操作地点',
+  `oper_param` varchar(2000) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '请求参数',
+  `json_result` varchar(2000) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '返回参数',
+  `status` int(1) DEFAULT '0' COMMENT '操作状态（0正常 1异常）',
+  `error_msg` varchar(2000) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '错误消息',
+  `oper_time` datetime DEFAULT NULL COMMENT '操作时间',
+  `cost_time` bigint(20) DEFAULT '0' COMMENT '消耗时间',
+  PRIMARY KEY (`oper_id`) USING BTREE,
+  KEY `idx_sys_oper_log_bt` (`business_type`) USING BTREE,
+  KEY `idx_sys_oper_log_s` (`status`) USING BTREE,
+  KEY `idx_sys_oper_log_ot` (`oper_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='操作日志记录';
+
+-- ----------------------------
+-- Table structure for sys_oss
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_oss`;
+CREATE TABLE `sys_oss` (
+  `oss_id` bigint(20) NOT NULL COMMENT '对象存储主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `file_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '文件名',
+  `original_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '原名',
+  `file_suffix` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '文件后缀名',
+  `url` varchar(500) COLLATE utf8_unicode_ci NOT NULL COMMENT 'URL地址',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '上传人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新人',
+  `service` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'minio' COMMENT '服务商',
+  PRIMARY KEY (`oss_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='OSS对象存储表';
+
+-- ----------------------------
+-- Table structure for sys_oss_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_oss_config`;
+CREATE TABLE `sys_oss_config` (
+  `oss_config_id` bigint(20) NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `config_key` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '配置key',
+  `access_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'accessKey',
+  `secret_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '秘钥',
+  `bucket_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '桶名称',
+  `prefix` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '前缀',
+  `endpoint` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '访问站点',
+  `domain` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '自定义域名',
+  `is_https` char(1) COLLATE utf8_unicode_ci DEFAULT 'N' COMMENT '是否https（Y=是,N=否）',
+  `region` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '域',
+  `access_policy` char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '1' COMMENT '桶权限类型(0=private 1=public 2=custom)',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '1' COMMENT '是否默认（0=是,1=否）',
+  `ext1` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '扩展字段',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`oss_config_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='对象存储配置表';
+
+-- ----------------------------
+-- Table structure for sys_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_post`;
+CREATE TABLE `sys_post` (
+  `post_id` bigint(20) NOT NULL COMMENT '岗位ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint(20) NOT NULL COMMENT '部门id',
+  `post_code` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT '岗位编码',
+  `post_category` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '岗位类别编码',
+  `post_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT '岗位名称',
+  `post_sort` int(4) NOT NULL COMMENT '显示顺序',
+  `status` char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT '状态（0正常 1停用）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`post_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='岗位信息表';
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role` (
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `role_name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT '角色名称',
+  `role_key` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '角色权限字符串',
+  `role_sort` int(4) NOT NULL COMMENT '显示顺序',
+  `data_scope` char(1) COLLATE utf8_unicode_ci DEFAULT '1' COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
+  `menu_check_strictly` tinyint(1) DEFAULT '1' COMMENT '菜单树选择项是否关联显示',
+  `dept_check_strictly` tinyint(1) DEFAULT '1' COMMENT '部门树选择项是否关联显示',
+  `status` char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT '角色状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='角色信息表';
+
+-- ----------------------------
+-- Table structure for sys_role_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_dept`;
+CREATE TABLE `sys_role_dept` (
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  `dept_id` bigint(20) NOT NULL COMMENT '部门ID',
+  PRIMARY KEY (`role_id`,`dept_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='角色和部门关联表';
+
+-- ----------------------------
+-- Table structure for sys_role_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_menu`;
+CREATE TABLE `sys_role_menu` (
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  `menu_id` bigint(20) NOT NULL COMMENT '菜单ID',
+  PRIMARY KEY (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='角色和菜单关联表';
+
+-- ----------------------------
+-- Table structure for sys_social
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_social`;
+CREATE TABLE `sys_social` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户id',
+  `auth_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '平台+平台唯一id',
+  `source` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户来源',
+  `open_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '平台编号唯一id',
+  `user_name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT '登录账号',
+  `nick_name` varchar(30) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '用户昵称',
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '用户邮箱',
+  `avatar` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '头像地址',
+  `access_token` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户的授权令牌',
+  `expire_in` int(11) DEFAULT NULL COMMENT '用户的授权令牌的有效期，部分平台可能没有',
+  `refresh_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '刷新令牌，部分平台可能没有',
+  `access_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '平台的授权信息，部分平台可能没有',
+  `union_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '用户的 unionid',
+  `scope` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '授予的权限，部分平台可能没有',
+  `token_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '个别平台的授权信息，部分平台可能没有',
+  `id_token` varchar(2000) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'id token，部分平台可能没有',
+  `mac_algorithm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '小米平台用户的附带属性，部分平台可能没有',
+  `mac_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '小米平台用户的附带属性，部分平台可能没有',
+  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '用户的授权code，部分平台可能没有',
+  `oauth_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Twitter平台用户的附带属性，部分平台可能没有',
+  `oauth_token_secret` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Twitter平台用户的附带属性，部分平台可能没有',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='社会化关系表';
+
+-- ----------------------------
+-- Table structure for sys_tenant
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant`;
+CREATE TABLE `sys_tenant` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '租户编号',
+  `contact_user_name` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '联系人',
+  `contact_phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '联系电话',
+  `company_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '企业名称',
+  `license_number` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '统一社会信用代码',
+  `address` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '地址',
+  `intro` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '企业简介',
+  `domain` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '域名',
+  `remark` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  `package_id` bigint(20) DEFAULT NULL COMMENT '租户套餐编号',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `account_count` int(11) DEFAULT '-1' COMMENT '用户数量（-1不限制）',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '租户状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='租户表';
+
+-- ----------------------------
+-- Table structure for sys_tenant_package
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant_package`;
+CREATE TABLE `sys_tenant_package` (
+  `package_id` bigint(20) NOT NULL COMMENT '租户套餐id',
+  `package_name` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '套餐名称',
+  `menu_ids` longtext COLLATE utf8_unicode_ci COMMENT '关联菜单id',
+  `remark` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  `menu_check_strictly` tinyint(1) DEFAULT '1' COMMENT '菜单树选择项是否关联显示',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`package_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='租户套餐表';
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint(20) DEFAULT NULL COMMENT '部门ID',
+  `user_name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户账号',
+  `nick_name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户昵称',
+  `user_type` varchar(10) COLLATE utf8_unicode_ci DEFAULT 'sys_user' COMMENT '用户类型（sys_user系统用户）',
+  `email` varchar(50) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '用户邮箱',
+  `phonenumber` varchar(11) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '手机号码',
+  `sex` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+  `avatar` bigint(20) DEFAULT NULL COMMENT '头像地址',
+  `password` varchar(100) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '密码',
+  `status` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
+  `del_flag` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `login_ip` varchar(128) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '最后登录IP',
+  `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  `ddid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='用户信息表';
+
+-- ----------------------------
+-- Table structure for sys_user_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_post`;
+CREATE TABLE `sys_user_post` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `post_id` bigint(20) NOT NULL COMMENT '岗位ID',
+  PRIMARY KEY (`user_id`,`post_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='用户与岗位关联表';
+
+-- ----------------------------
+-- Table structure for sys_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_role`;
+CREATE TABLE `sys_user_role` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  PRIMARY KEY (`user_id`,`role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='用户和角色关联表';
+
+-- ----------------------------
+-- Table structure for test_demo
+-- ----------------------------
+DROP TABLE IF EXISTS `test_demo`;
+CREATE TABLE `test_demo` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `dept_id` bigint(20) DEFAULT NULL COMMENT '部门id',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `order_num` int(11) DEFAULT '0' COMMENT '排序号',
+  `test_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'key键',
+  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '值',
+  `version` int(11) DEFAULT '0' COMMENT '版本',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新人',
+  `del_flag` int(11) DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='测试单表';
+
+-- ----------------------------
+-- Table structure for test_leave
+-- ----------------------------
+DROP TABLE IF EXISTS `test_leave`;
+CREATE TABLE `test_leave` (
+  `id` bigint(20) NOT NULL COMMENT 'id',
+  `tenant_id` varchar(20) DEFAULT '000000' COMMENT '租户编号',
+  `leave_type` varchar(255) NOT NULL COMMENT '请假类型',
+  `tilte` varchar(255) DEFAULT NULL COMMENT '名称',
+  `sn` varchar(255) DEFAULT NULL COMMENT '编号',
+  `gk` varchar(255) DEFAULT NULL COMMENT '规格',
+  `start_date` datetime NOT NULL COMMENT '开始时间',
+  `end_date` datetime NOT NULL COMMENT '结束时间',
+  `leave_days` int(10) NOT NULL COMMENT '请假天数',
+  `remark` varchar(255) DEFAULT NULL COMMENT '请假原因',
+  `status` varchar(255) DEFAULT NULL COMMENT '状态',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='请假申请表';
+
+-- ----------------------------
+-- Table structure for test_tree
+-- ----------------------------
+DROP TABLE IF EXISTS `test_tree`;
+CREATE TABLE `test_tree` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT '000000' COMMENT '租户编号',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父id',
+  `dept_id` bigint(20) DEFAULT NULL COMMENT '部门id',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `tree_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '值',
+  `version` int(11) DEFAULT '0' COMMENT '版本',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新人',
+  `del_flag` int(11) DEFAULT '0' COMMENT '删除标志',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='测试树表';
+
+-- ----------------------------
+-- Table structure for wf_category
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_category`;
+CREATE TABLE `wf_category` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `category_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '分类名称',
+  `category_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '分类编码',
+  `parent_id` bigint(20) DEFAULT NULL COMMENT '父级id',
+  `sort_num` int(19) DEFAULT NULL COMMENT '排序',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户编号',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uni_category_code` (`category_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='流程分类';
+
+-- ----------------------------
+-- Table structure for wf_definition_config
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_definition_config`;
+CREATE TABLE `wf_definition_config` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `table_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '表名',
+  `definition_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '流程定义ID',
+  `process_key` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '流程KEY',
+  `version` int(10) NOT NULL COMMENT '流程版本',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT '' COMMENT '备注',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uni_definition_id` (`definition_id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='流程定义配置';
+
+-- ----------------------------
+-- Table structure for wf_form_manage
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_form_manage`;
+CREATE TABLE `wf_form_manage` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `form_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '表单名称',
+  `form_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '表单类型',
+  `router` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '路由地址/表单ID',
+  `remark` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户编号',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='表单管理';
+
+-- ----------------------------
+-- Table structure for wf_node_config
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_node_config`;
+CREATE TABLE `wf_node_config` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `form_id` bigint(20) DEFAULT NULL COMMENT '表单id',
+  `form_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '表单类型',
+  `node_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '节点名称',
+  `node_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '节点id',
+  `definition_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '流程定义id',
+  `apply_user_task` char(1) COLLATE utf8_unicode_ci DEFAULT '0' COMMENT '是否为申请人节点 （0是 1否）',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='节点配置';
+
+-- ----------------------------
+-- Table structure for wf_task_back_node
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_task_back_node`;
+CREATE TABLE `wf_task_back_node` (
+  `id` bigint(20) NOT NULL,
+  `node_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '节点id',
+  `node_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '节点名称',
+  `order_no` int(11) NOT NULL COMMENT '排序',
+  `instance_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '流程实例id',
+  `task_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '节点类型',
+  `assignee` varchar(2000) COLLATE utf8_unicode_ci NOT NULL COMMENT '审批人',
+  `tenant_id` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '租户编号',
+  `create_dept` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_by` bigint(20) DEFAULT NULL COMMENT '创建者',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` bigint(20) DEFAULT NULL COMMENT '更新者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='节点审批记录';
+
+-- ----------------------------
+-- View structure for current_inventory
+-- ----------------------------
+DROP VIEW IF EXISTS `current_inventory`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `current_inventory` AS select `mes_inventory_ledger`.`stockid` AS `stockid`,`mes_inventory_ledger`.`location_id` AS `location_id`,sum(`mes_inventory_ledger`.`quantity`) AS `current_stock` from `mes_inventory_ledger` group by `mes_inventory_ledger`.`stockid`,`mes_inventory_ledger`.`location_id` having (`current_stock` > 0);
+
+-- ----------------------------
+-- Procedure structure for sp_inout
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_inout`;
+delimiter ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_inout`(
+    IN p_product_id BIGINT,       -- 产品ID
+    IN p_quantity INT,         -- 出库数量
+    IN p_location_id INT,      -- 指定库位ID，如果为NULL则按时间出库
+		IN p_tenant_id VARCHAR(20),      -- 租户
+    OUT p_success INT          -- 出库是否成功，1表示成功，0表示失败
+)
+BEGIN
+    DECLARE total_quantity INT;
+    
+    -- 计算库存总量
+    SELECT SUM(quantity) INTO total_quantity
+    FROM mes_inventory_ledger
+    WHERE stockid = p_product_id AND tenant_id = p_tenant_id;
+    
+    
+    IF total_quantity >= p_quantity THEN
+        -- 库存充足，可以出库
+        IF p_location_id IS NOT NULL THEN
+            -- 指定了库位，检查指定库位库存是否足够
+            SELECT SUM(quantity) INTO total_quantity
+            FROM mes_inventory_ledger
+            WHERE stockid = p_product_id AND location_id = p_location_id AND tenant_id = p_tenant_id;
+            
+            
+            IF total_quantity >= p_quantity THEN
+                -- 指定库位库存足够，进行出库
+                INSERT INTO mes_inventory_ledger(stockid, location_id, quantity, operation, batch_no, create_time,tenant_id)
+                VALUES (p_product_id, p_location_id, -p_quantity, 2, NULL, NOW(),p_tenant_id);
+                SET p_success = 1;
+            ELSE
+                -- 指定库位库存不足，根据FIFO策略选择其他库位出库
+                -- 可根据具体逻辑选择其他库位进行补货
+                -- 这里仅作为示例，您可以根据实际情况进行补充
+                SET p_success = 0;
+            END IF;
+        ELSE
+            -- 没有指定库位，按时间出库，根据FIFO策略选择最早入库的货物进行出库
+            INSERT INTO mes_inventory_ledger(stockid, location_id, quantity, operation, batch_no, create_time,tenant_id)
+            SELECT stockid, location_id, -LEAST(quantity, p_quantity), 2, NULL, NOW(),tenant_id
+            FROM mes_inventory_ledger
+            WHERE stockid = p_product_id AND tenant_id = p_tenant_id
+            ORDER BY create_time
+            LIMIT 1;
+            
+            SET p_success = 1;
+        END IF;
+    ELSE
+        -- 库存不足，无法出库
+        SET p_success = 0;
+    END IF;
+    
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for sp_inout_copy1
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_inout_copy1`;
+delimiter ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_inout_copy1`(
+    IN p_product_id BIGINT,       -- 产品ID
+    IN p_quantity INT,         -- 出库数量
+    IN p_location_id INT,      -- 指定库位ID，如果为NULL则按时间出库
+		IN p_tenant_id VARCHAR(20),      -- 租户
+    OUT p_success INT          -- 出库是否成功，1表示成功，0表示失败
+)
+BEGIN
+    DECLARE total_quantity INT;
+    
+    -- 计算库存总量
+    SELECT SUM(quantity) INTO total_quantity
+    FROM mes_inventory_ledger
+    WHERE stockid = p_product_id AND tenant_id = p_tenant_id;
+    
+    
+    IF total_quantity >= p_quantity THEN
+        -- 库存充足，可以出库
+        IF p_location_id IS NOT NULL THEN
+            -- 指定了库位，检查指定库位库存是否足够
+            SELECT SUM(quantity) INTO total_quantity
+            FROM mes_inventory_ledger
+            WHERE stockid = p_product_id AND location_id = p_location_id AND tenant_id = p_tenant_id;
+            
+            
+            IF total_quantity >= p_quantity THEN
+                -- 指定库位库存足够，进行出库
+                INSERT INTO mes_inventory_ledger(stockid, location_id, quantity, operation, batch_no, create_time,tenant_id)
+                VALUES (p_product_id, p_location_id, -p_quantity, 2, NULL, NOW(),p_tenant_id);
+                SET p_success = 1;
+            ELSE
+                -- 指定库位库存不足，根据FIFO策略选择其他库位出库
+                -- 可根据具体逻辑选择其他库位进行补货
+                -- 这里仅作为示例，您可以根据实际情况进行补充
+                SET p_success = 0;
+            END IF;
+        ELSE
+            -- 没有指定库位，按时间出库，根据FIFO策略选择最早入库的货物进行出库
+            INSERT INTO mes_inventory_ledger(stockid, location_id, quantity, operation, batch_no, create_time,tenant_id)
+            SELECT stockid, location_id, -LEAST(quantity, p_quantity), 2, NULL, NOW(),tenant_id
+            FROM mes_inventory_ledger
+            WHERE stockid = p_product_id AND tenant_id = p_tenant_id
+            ORDER BY create_time
+            LIMIT 1;
+            
+            SET p_success = 1;
+        END IF;
+    ELSE
+        -- 库存不足，无法出库
+        SET p_success = 0;
+    END IF;
+    
+END
+;;
+delimiter ;
+
+SET FOREIGN_KEY_CHECKS = 1;

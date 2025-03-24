@@ -16,6 +16,7 @@ import com.liaoyun.mes.domain.bo.MesInstockBo;
 import com.liaoyun.mes.domain.bo.MesTaskBo;
 import com.liaoyun.mes.domain.vo.*;
 import com.liaoyun.mes.mapper.*;
+import com.liaoyun.system.mapper.MesInventoryLedgerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.liaoyun.mes.domain.bo.MesProductBo;
@@ -42,6 +43,7 @@ public class MesProductServiceImpl implements IMesProductService {
     private final MesStockMapper stockMapper;
     private final MesWorkMapper workMapper;
     private final MesOutstockMapper outstockMapper;
+    private final MesInventoryLedgerMapper inventoryLedgerMapper;
 
     /**
      * 查询③产品管理
@@ -231,6 +233,14 @@ public class MesProductServiceImpl implements IMesProductService {
             } else {
                 vo.setNcout(jinlu3.floatValue());
             }
+            BigDecimal pn=BigDecimal.ZERO;
+            try{
+                pn=new BigDecimal(inventoryLedgerMapper.getStockByProductId(vo.getId()));
+            }catch (Exception e){
+
+            }
+
+            vo.setNowstock(pn);
             LambdaQueryWrapper<MesOutstock> owr = new LambdaQueryWrapper<>();
             owr.eq(MesOutstock::getRemark1, work.getOrderid());
             owr.eq(MesOutstock::getProId, vo.getId());

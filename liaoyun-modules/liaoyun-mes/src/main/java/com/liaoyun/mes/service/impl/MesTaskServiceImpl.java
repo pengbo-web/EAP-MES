@@ -294,6 +294,17 @@ public class MesTaskServiceImpl implements IMesTaskService {
     @DSTransactional
     public Boolean stockupstatus(MesTaskBo bo) {
         MesProductVo productVo = productService.queryById(bo.getProId());
+        if(null==productVo){
+            MesStock stock = stockMapper.selectById(bo.getProId());
+            if(null!=stock){
+                LambdaQueryWrapper<MesProduct> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(MesProduct::getStocks,stock.getId());
+                List<MesProductVo> list = productMapper.selectVoList(wrapper);
+                if(list.size()>0){
+                    productVo = list.get(0);
+                }
+            }
+        }
         MesTask update = MapstructUtils.convert(bo, MesTask.class);
         MesOutstockBo outstockBo = new MesOutstockBo();
         outstockBo.setProId(update.getProId());//已变更

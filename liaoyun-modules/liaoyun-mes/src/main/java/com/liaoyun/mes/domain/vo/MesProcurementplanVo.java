@@ -42,7 +42,7 @@ public class MesProcurementplanVo implements Serializable {
     @ExcelProperty(value = "流转号")
     private String sn;
 
-    private int mj;
+    private double mj;
 
     /**
      * 产品

@@ -72,7 +72,7 @@ public class MesTmodel extends TenantEntity {
     /**
      * 保养周期
      */
-    private Date otime;
+    private Integer otime;
 
     /**
      * 下次周期

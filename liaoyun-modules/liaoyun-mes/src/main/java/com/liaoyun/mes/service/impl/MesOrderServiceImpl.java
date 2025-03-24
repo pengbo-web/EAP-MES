@@ -473,7 +473,40 @@ public class MesOrderServiceImpl implements IMesOrderService {
     @Override
     public List<MesOrderVo> queryList(MesOrderBo bo) {
         LambdaQueryWrapper<MesOrder> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<MesOrderVo> list = baseMapper.selectVoList(lqw);
+        for (MesOrderVo vo :list) {
+            //其他关联
+            MesCustomVo customVo = customMapper.selectVoById(vo.getCustid());
+            if(null==customVo){
+                System.out.println(vo);
+            }
+            try{
+                vo.setCustname(customVo.getTitle());
+            }catch (Exception e){
+                System.out.printf(vo.getId().toString());
+            }
+            if (!vo.getStids().isEmpty()){
+                String[] ids=vo.getStids().split(",");
+                List<Long> longIds = Arrays.stream(ids)
+                    .map(Long::parseLong)
+                    .toList();
+                LambdaQueryWrapper<MesOrderDe> wrapper=new LambdaQueryWrapper<>();
+                wrapper.in(MesOrderDe::getId, longIds);
+                //订单详情
+                List<MesOrderDeVo> deList=deMapper.selectVoList(wrapper);
+                StringBuffer sb=new StringBuffer();
+                for (MesOrderDeVo deVo : deList) {
+                    MesStockVo stockVo = stockMapper.selectVoById(deVo.getStockid());
+                    if (null == stockVo) {
+                        System.out.println(vo);
+                    }
+                    sb.append(stockVo.getTilte());
+                    sb.append(",");
+                }
+                vo.setStunames(sb.toString());
+            }
+        }
+        return list;
     }
 
     private LambdaQueryWrapper<MesOrder> buildQueryWrapper(MesOrderBo bo) {
