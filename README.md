@@ -2,7 +2,7 @@
 ## 平台简介
 
 体验体制：
-> >官方前端项目地址: [Liaoyun](http://liao.llcoms.com/tenant/tenant)<br>
+> >官方前端项目地址: [Liaoyun](http://x.llcoms.com/tenant/tenant)<br>
 > admin/admin123
 <br>感谢Tom-Mes对于开源的支持。
 
