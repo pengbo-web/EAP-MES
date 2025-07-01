@@ -41,10 +41,6 @@
 ![Plus部署架构图](https://foruda.gitee.com/images/1678981882624240692/ae2a3f3e_1766278.png "Plus部署架构图.png")
 
 
-## 捐献作者
-2498828866
-<img src="https://images.llcoms.com/base/WechatIMG31304.jpg" width="300px" height="450px" />
-<img src="https://images.llcoms.com/base/WechatIMG31305.jpg" width="300px" height="450px" />
 
 ## 演示图例
  ![输入图片说明](https://images.llcoms.com/base/11.png)
