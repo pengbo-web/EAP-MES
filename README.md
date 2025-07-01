@@ -54,7 +54,13 @@
  ![输入图片说明](https://images.llcoms.com/base/15.png) ![输入图片说明](https://images.llcoms.com/base/16.png) ![输入图片说明](https://images.llcoms.com/base/17.png) ![输入图片说明](https://images.llcoms.com/base/19.png) ![输入图片说明](https://images.llcoms.com/base/20.png)
  ![输入图片说明](https://images.llcoms.com/base/21.png) ![输入图片说明](https://images.llcoms.com/base/24.png)
 ![输入图片说明](https://images.llcoms.com/base/30.png)
+---------------------
+ **商业版新增PAD 中控段** 
 
 
+![输入图片说明](image.png)
 
 
+![输入图片说明](image2.png)
+![输入图片说明](image3.png)
+![输入图片说明](image4.png)
