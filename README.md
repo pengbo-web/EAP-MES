@@ -1,9 +1,12 @@
 - - -
 ## 平台简介
 
-体验体制：
-> >官方前端项目地址: [Liaoyun](http://x.llcoms.com/tenant/tenant)<br>
-> admin/admin123
+## 体验体制：
+## > >官方前端项目地址: [Liaoyun](http://mes.llcoms.com)<br>
+
+## > 企业编码303036，账号ceshi01密码123456
+
+
 <br>感谢Tom-Mes对于开源的支持。
 
 > 成员前端项目地址: 基于vben5 [ruoyi-plus-vben5](https://gitee.com/dapppp/ruoyi-plus-vben5)
@@ -51,7 +54,7 @@
  ![输入图片说明](https://images.llcoms.com/base/21.png) ![输入图片说明](https://images.llcoms.com/base/24.png)
 ![输入图片说明](https://images.llcoms.com/base/30.png)
 ---------------------
- **商业版新增PAD 中控段** 
+ ## **商业版新增PAD 中控段** 
 
 
 ![输入图片说明](image.png)
