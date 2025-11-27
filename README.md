@@ -11,7 +11,7 @@
 ![输入图片说明](%E6%8E%92%E7%A8%8B%E8%AE%A1%E5%88%92%E8%AE%A1%E5%88%92%E6%8E%92%E7%A8%8B.gif)
 
 ## 班次管理
-
+![输入图片说明](%E7%8F%AD%E6%AC%A11127.gif)
 
 ## 手机端报工
 ![输入图片说明](%E7%A7%BB%E5%8A%A8%E6%8A%A5%E5%B7%A5%E7%A7%BB%E5%8A%A8%E7%AB%AF%E6%8A%A5%E5%B7%A5.gif)
@@ -20,8 +20,6 @@
 
 ## > 企业编码303036，账号ceshi01密码123456
 
-
-<br>感谢Tom-Mes对于开源的支持。
 
 > 成员前端项目地址: 基于vben5 [ruoyi-plus-vben5](https://gitee.com/dapppp/ruoyi-plus-vben5)
 >了云制造，开源版本，包含功能模块：
