@@ -1,6 +1,14 @@
 ## 导航页
 ![输入图片说明](%E5%AF%BC%E8%88%AA%E9%A1%B5main.png)
 
+## 增加ai智能体分析APS策略
+![输入图片说明](image-ai1.png)
+
+## ai手机端
+![输入图片说明](3e2cf7f75a98ef4c9b412c3d4792199c.png)
+
+## MOM订单管理
+![输入图片说明](image-mom1.png)
 
 ## 订单下达
 
