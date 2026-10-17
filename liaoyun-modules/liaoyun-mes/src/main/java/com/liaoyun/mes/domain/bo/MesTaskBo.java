@@ -124,6 +124,11 @@ public class MesTaskBo extends BaseEntity {
     private Long currproid;
 
     /**
+     * 派工来源 RULE/MANUAL/FALLBACK(二次开发新增)
+     */
+    private String workplaceDispatch;
+
+    /**
      * 角色状态（0正常 1进行中 2已完成 3异常完工）
      */
     private String status;

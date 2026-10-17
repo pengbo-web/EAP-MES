@@ -169,4 +169,9 @@ public class MesTask extends TenantEntity {
 
     private String remark2;
     private Integer procure;
+
+    /**
+     * 派工来源 RULE/MANUAL/FALLBACK(二次开发新增)
+     */
+    private String workplaceDispatch;
 }
