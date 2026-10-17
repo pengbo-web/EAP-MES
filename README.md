@@ -100,3 +100,21 @@
 ## 平台简介
 #  源码开源有80%以上。若依框架AI很好补。数据库和代码文档一直有人问。数据库直接去下载狮子大佬的ruoyi-vue-plus，里面的基础数据再加上本项目的mes开头的数据，操作和启动文档，都参考ruoyi-vue-plus。加QQ备注清。
 QQ：2498828866
+---
+
+## 二次开发说明(pengbo, 2026-10)
+
+本分支 `feature/mes-six-modules` 在上游 Liao-MES 基础上完成六个自研模块, 全部带端到端验收脚本(`eap-gateway/verify_*.py`):
+
+| 模块 | 包/入口 | 验收 |
+|---|---|---|
+| EAP 设备事件集成(自动报工/报警转待审核单) | `com.liaoyun.mes.eap` `POST /mes/eap/event` | 5 模拟设备并发活链 |
+| MRP 递归 N 层展开 + 净需求 | `com.liaoyun.mes.mrp` `GET /mes/product/getbom/{workId}` | 4 层夹具深度断言 |
+| 批次级 FIFO 出库分配 + 批次追溯回填 | `com.liaoyun.mes.fifo`(替换存储过程 sp_inout) | 40=30+10 分配断言 |
+| 设备状态看板 + OEE 三率引擎 | `/mes/eap/dashboard-ui`、`/mes/eap/oee` | 8 项指标与独立手算一致 |
+| SN 双向追溯(件级正向/批次级反向) | `com.liaoyun.mes.trace` `/mes/trace/*` | 追溯树/命中/空树断言 |
+| 工序自动派工规则引擎(负载选站/完工流转/报警改派) | `com.liaoyun.mes.dispatch` `/mes/dispatch/*` | 三段断言全过 |
+
+- 技术方案与验收设计: `docs/技术方案-项目二六模块.md`
+- EAP 网关演示桥接器(消费 iot 采集队列 → 推送 MES): `eap-gateway/eap_bridge.py`
+- 环境: JDK17 + MySQL8 + Redis + RabbitMQ; 新增表 5 张见各模块注释与方案文档

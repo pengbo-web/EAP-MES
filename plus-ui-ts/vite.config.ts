@@ -13,7 +13,10 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
     resolve: {
       alias: {
         '~': path.resolve(__dirname, './'),
-        '@': path.resolve(__dirname, './src')
+        '@': path.resolve(__dirname, './src'),
+        // 上游仓库缺失的 bpmn 类型模块别名(仅类型导入, 编译时擦除)
+        bpmn: 'bpmn-js',
+        bpmnDesign: path.resolve(__dirname, './src/bpmn/panel/index.vue')
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
@@ -25,7 +28,7 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
       open: true,
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://localhost:8086',
+          target: 'http://localhost:8188',
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
