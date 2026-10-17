@@ -1,0 +1,6 @@
+redis
+requests
+pycryptodome
+bcrypt
+websocket-client
+paho-mqtt
