@@ -181,8 +181,17 @@ public class EapIntegrationService {
         ycrec.setStatus("0");
         ycrec.setRemark("EAP集成模块自动生成, 待审核");
         ycrecMapper.insert(ycrec);
-        task.setRemark((task.getRemark() == null ? "" : task.getRemark() + ",") + "EAP报警: " + event.getParams());
-        taskMapper.updateById(task);
+        // remark 仅作提示线索, 报警明细以异常报工单为准: 设置追加上限, 防止持续报警撑爆列宽
+        // (超长后继续追加会触发 MysqlDataTruncation, 事务回滚形成毒消息循环)
+        String remark = task.getRemark() == null ? "" : task.getRemark();
+        if (remark.length() < 400) {
+            String note = "EAP报警: " + event.getParams();
+            if (note.length() > 100) {
+                note = note.substring(0, 100);
+            }
+            task.setRemark((remark.isEmpty() ? "" : remark + ",") + note);
+            taskMapper.updateById(task);
+        }
         // 报警联动: 暂停设备所在工作站并改派在制任务
         if (dispatchEnabled) {
             dispatchService.suspendByDevice(event.getDeviceCode(), suspendMinutes, "EAP参数超限: " + event.getParams());

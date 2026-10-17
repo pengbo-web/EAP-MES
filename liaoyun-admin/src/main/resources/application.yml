@@ -62,6 +62,18 @@ user:
 spring:
   application:
     name: ${ruoyi.name}
+  # EAP 事件总线(RabbitMQ): 消费采集网关推送的设备事件, 手动ack+死信
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: 123456
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 2
+        max-concurrency: 4
+        prefetch: 10
   threads:
     # 开启虚拟线程 仅jdk21可用
     virtual:

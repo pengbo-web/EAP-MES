@@ -110,6 +110,12 @@
             <artifactId>liaoyun-common-websocket</artifactId>
         </dependency>
 
+        <!-- EAP 事件总线: 消费采集网关 RabbitMQ 设备事件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
