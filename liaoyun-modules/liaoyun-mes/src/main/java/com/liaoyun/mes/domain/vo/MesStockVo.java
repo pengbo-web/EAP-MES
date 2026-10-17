@@ -150,6 +150,11 @@ public class MesStockVo implements Serializable {
 
     private float ncout;
 
+    /**
+     * 净需求(毛需求-现有库存, 下限0)——二次开发新增
+     */
+    private BigDecimal netcount;
+
     private Integer iswaring;
 
     private Date createtime;

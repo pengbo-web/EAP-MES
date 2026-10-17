@@ -44,6 +44,7 @@ public class MesProductServiceImpl implements IMesProductService {
     private final MesWorkMapper workMapper;
     private final MesOutstockMapper outstockMapper;
     private final MesInventoryLedgerMapper inventoryLedgerMapper;
+    private final com.liaoyun.mes.mrp.MesMrpService mesMrpService;
 
     /**
      * 查询③产品管理
@@ -213,49 +214,13 @@ public class MesProductServiceImpl implements IMesProductService {
 
     @Override
     public List<MesStockVo> getbom(Long bo) {
+        // 二次开发: 单层展开重构为 MesMrpService 递归N层展开(含净需求计算/循环保护/BigDecimal精度)
         MesWork work = workMapper.selectById(bo);
-//        MesProductVo productVo=baseMapper.selectVoById(work.getProId());
-        LambdaQueryWrapper<MesProduct> wrapper = new LambdaQueryWrapper<>();
-        List<MesUnitmeasure> lists = unitmeasureMapper.selectList();
-        wrapper.eq(MesProduct::getPid, work.getProId());
-        List<MesProduct> list = baseMapper.selectList(wrapper);
-        List<MesStockVo> vos = new ArrayList<>();
-        for (MesProduct mesProduct : list) {
-            MesStockVo vo = new MesStockVo();
-            vo = stockMapper.selectVoById(mesProduct.getStocks());
-            float hh = 0;
-            MesUnitmeasure so = unitmeasureMapper.selectById(mesProduct.getUnitId());
-            MesUnitmeasure tar = unitmeasureMapper.selectById(vo.getUnitid());
-            hh = mesProduct.getNeedCount() * work.getNeednum() * mesProduct.getWeight();
-            BigDecimal jinlu3 = UnitConverter.convertUnit(so.getTitle(), tar.getTitle(), new BigDecimal(hh), lists);
-            if (vo.getType().equals("色粉")) {
-                vo.setNcout(jinlu3.floatValue() / 25);
-            } else {
-                vo.setNcout(jinlu3.floatValue());
-            }
-            BigDecimal pn=BigDecimal.ZERO;
-            try{
-                pn=new BigDecimal(inventoryLedgerMapper.getStockByProductId(vo.getId()));
-            }catch (Exception e){
-
-            }
-
-            vo.setNowstock(pn);
-            LambdaQueryWrapper<MesOutstock> owr = new LambdaQueryWrapper<>();
-            owr.eq(MesOutstock::getRemark1, work.getOrderid());
-            owr.eq(MesOutstock::getProId, vo.getId());
-            owr.eq(MesOutstock::getStatus, '1');
-            List<MesOutstock> list1 = outstockMapper.selectList(owr);
-            float op = 0;
-            if (ObjectUtil.isNotNull(list1) && list1.size() > 0) {
-                for (MesOutstock mesOutstock : list1) {
-                    op += mesOutstock.getCount().floatValue();
-                }
-            }
-            vo.setCkcount(op);
-            vos.add(vo);
+        if (work == null || work.getProId() == null) {
+            return new ArrayList<>();
         }
-        return vos;
+        BigDecimal orderQty = BigDecimal.valueOf(work.getNeednum() == null ? 0 : work.getNeednum());
+        return mesMrpService.expand(work.getProId(), orderQty, work.getOrderid());
     }
 
     private LambdaQueryWrapper<MesProduct> buildQueryWrapper(MesProductBo bo) {
