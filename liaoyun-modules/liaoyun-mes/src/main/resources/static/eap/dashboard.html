@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>EAP 生产看板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0b1226; color: #dfe8ff; font-family: "Microsoft YaHei", sans-serif; padding: 16px; }
+        h1 { font-size: 22px; text-align: center; letter-spacing: 4px; margin-bottom: 12px; color: #7fd4ff; }
+        .kpis { display: flex; gap: 12px; margin-bottom: 12px; }
+        .kpi { flex: 1; background: #14203f; border: 1px solid #24365f; border-radius: 8px; padding: 12px; text-align: center; }
+        .kpi .v { font-size: 28px; font-weight: 700; color: #ffd479; }
+        .kpi .t { font-size: 12px; color: #8fa3c8; margin-top: 4px; }
+        .row { display: flex; gap: 12px; margin-bottom: 12px; }
+        .card { background: #14203f; border: 1px solid #24365f; border-radius: 8px; padding: 10px; }
+        .card h3 { font-size: 13px; color: #8fa3c8; margin-bottom: 6px; font-weight: 400; }
+        #pie, #bar { height: 240px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 6px 8px; border-bottom: 1px solid #24365f; text-align: left; }
+        th { color: #8fa3c8; font-weight: 400; }
+        .st0 { color: #52e0a5; } .st1 { color: #ff7875; } .st2 { color: #8fa3c8; }
+        .pbar { background: #24365f; border-radius: 4px; height: 10px; width: 120px; display: inline-block; vertical-align: middle; }
+        .pbar i { display: block; height: 10px; border-radius: 4px; background: linear-gradient(90deg, #3aa0ff, #7fd4ff); }
+        .half { flex: 1; }
+    </style>
+</head>
+<body>
+<h1>EAP 设备互联生产看板(二次开发)</h1>
+<div class="kpis">
+    <div class="kpi"><div class="v" id="k-total">-</div><div class="t">接入设备</div></div>
+    <div class="kpi"><div class="v" id="k-running">-</div><div class="t">运行中</div></div>
+    <div class="kpi"><div class="v" id="k-util">-</div><div class="t">设备稼动率 %</div></div>
+    <div class="kpi"><div class="v" id="k-rate">-</div><div class="t">当日良品率 %</div></div>
+    <div class="kpi"><div class="v" id="k-qty">-</div><div class="t">当日报工数</div></div>
+</div>
+<div class="row">
+    <div class="card half"><h3>设备状态分布</h3><div id="pie"></div></div>
+    <div class="card half"><h3>当日报工小时趋势</h3><div id="bar"></div></div>
+</div>
+<div class="row">
+    <div class="card half">
+        <h3>设备明细(状态 / 当日完工 / 报警 / 不良)</h3>
+        <table><thead><tr><th>设备</th><th>状态</th><th>完工</th><th>报警</th><th>不良</th><th>最后事件</th></tr></thead>
+        <tbody id="dev-tbody"></tbody></table>
+    </div>
+    <div class="card half">
+        <h3>工单工序进度</h3>
+        <table><thead><tr><th>工单</th><th>名称</th><th>进度</th><th>完成率</th></tr></thead>
+        <tbody id="work-tbody"></tbody></table>
+    </div>
+</div>
+<script>
+    var pie = typeof echarts !== 'undefined' ? echarts.init(document.getElementById('pie')) : null;
+    var bar = typeof echarts !== 'undefined' ? echarts.init(document.getElementById('bar')) : null;
+    var STATUS = {'0': ['运行中', 'st0'], '1': ['报警', 'st1'], '2': ['离线', 'st2']};
+
+    function refresh() {
+        fetch('/mes/eap/dashboard/data').then(function (r) { return r.json(); }).then(function (resp) {
+            if (resp.code !== 200) { return; }
+            var d = resp.data, s = d.summary;
+            document.getElementById('k-total').innerText = s.total;
+            document.getElementById('k-running').innerText = s.running;
+            document.getElementById('k-util').innerText = s.utilization;
+            document.getElementById('k-rate').innerText = d.quality.rate;
+            document.getElementById('k-qty').innerText = d.quality.qty;
+
+            if (pie) pie.setOption({
+                color: ['#52e0a5', '#ff7875', '#5b6b8c'],
+                series: [{
+                    type: 'pie', radius: ['45%', '70%'],
+                    data: [
+                        {name: '运行中', value: s.running},
+                        {name: '报警', value: s.alarm},
+                        {name: '离线', value: s.offline}
+                    ],
+                    label: {color: '#dfe8ff'}
+                }]
+            });
+
+            var hours = Object.keys(d.hourlyTrend);
+            if (bar) bar.setOption({
+                grid: {left: 40, right: 10, top: 20, bottom: 24},
+                xAxis: {type: 'category', data: hours, axisLabel: {color: '#8fa3c8'}},
+                yAxis: {type: 'value', axisLabel: {color: '#8fa3c8'}, splitLine: {lineStyle: {color: '#24365f'}}},
+                series: [{type: 'bar', data: hours.map(function (h) { return d.hourlyTrend[h]; }), itemStyle: {color: '#3aa0ff'}}]
+            });
+
+            var dt = '';
+            d.devices.forEach(function (dev) {
+                var st = STATUS[dev.status];
+                dt += '<tr><td>' + dev.code + '</td><td class="' + st[1] + '">' + st[0] + '</td><td>' + dev.todayCount
+                    + '</td><td>' + dev.todayAlarm + '</td><td>' + dev.todayDefective + '</td><td>'
+                    + (dev.lastEventTime || '-') + '</td></tr>';
+            });
+            document.getElementById('dev-tbody').innerHTML = dt || '<tr><td colspan="6">暂无设备接入</td></tr>';
+
+            var wt = '';
+            d.workProgress.forEach(function (w) {
+                wt += '<tr><td>' + w.sn + '</td><td>' + (w.title || '-') + '</td><td><span class="pbar"><i style="width:'
+                    + w.pct + '%"></i></span> ' + w.okprocess + '/' + w.processcount + '</td><td>' + w.pct + '%</td></tr>';
+            });
+            document.getElementById('work-tbody').innerHTML = wt || '<tr><td colspan="4">暂无工单</td></tr>';
+        });
+    }
+
+    refresh();
+    setInterval(refresh, 5000);
+    window.onresize = function () { if (pie) pie.resize(); if (bar) bar.resize(); };
+</script>
+</body>
+</html>
