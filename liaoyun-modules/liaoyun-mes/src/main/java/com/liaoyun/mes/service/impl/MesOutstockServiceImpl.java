@@ -44,6 +44,8 @@ public class MesOutstockServiceImpl implements IMesOutstockService {
 
     private final MesStockMapper stockMapper;
 
+    private final com.liaoyun.mes.fifo.MesFifoService mesFifoService;
+
     private final MesOurecMapper ourecMapper;
 
     private final MesAllrecMapper allrecMapper;
@@ -141,13 +143,9 @@ public class MesOutstockServiceImpl implements IMesOutstockService {
             if(bo.getKwid()==0){
                 bo.setKwid(null);
             }
-            Map<String,Object> map=new HashMap<>();
-            map.put("stockid",stock.getId());
-            map.put("count",add.getCount().intValue());
-            map.put("kwid",bo.getKwid());
-            map.put("tenantid", LoginHelper.getTenantId());
-            map.put("msg",0);
-            inventoryLedgerMapper.callInOutProcedure(map);
+            // 二次开发: 以批次级 FIFO 分配器替代存储过程 sp_inout(原实现按库位汇总FIFO且出库扣减丢失批次号)
+            mesFifoService.allocate(stock.getId(), add.getCount().intValue(),
+                add.getRemark1() == null ? null : String.valueOf(add.getRemark1()));
             MesAllrec allrec=new MesAllrec();
             allrec.setStockid(add.getProId());
             allrec.setType("出库");
