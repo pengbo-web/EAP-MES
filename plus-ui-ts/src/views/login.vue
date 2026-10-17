@@ -58,9 +58,8 @@
       <div class="
                         md:flex md:items-center md:justify-center
                         w-full
-                        sm:w-auto
                         md:h-full
-                        w-2/5
+                        md:w-2/5
                         xl:w-2/5
                         p-8
                         md:p-10
