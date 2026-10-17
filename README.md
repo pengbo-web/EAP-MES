@@ -5,7 +5,7 @@
 `eap / mrp / fifo / trace / dispatch` 五个子包与 5 张新表,全部模块带端到端验收脚本,实测数字可复现。
 
 设备侧采集网关(EAP Gateway,Modbus/SECS-GEM/MQTT 多协议接入)为独立项目,
-仓库:[pengbo-web/EAP-MES](https://github.com/pengbo-web/EAP-MES),两仓库通过 RabbitMQ 事件总线与 HTTP 双通道集成。
+仓库:[pengbo-web/eap-gateway-demo](https://github.com/pengbo-web/eap-gateway-demo),两仓库通过 RabbitMQ 事件总线与 HTTP 双通道集成。
 
 ## 一、二次开发模块与实测指标
 
@@ -72,7 +72,7 @@ pnpm dev
 
 ### 5. EAP 设备集成(可选)
 
-- **MQ 通道**:启动 [EAP-MES 网关](https://github.com/pengbo-web/EAP-MES)后,网关向交换机 `eap.events` 发布统一事件,
+- **MQ 通道**:启动 [EAP 采集网关](https://github.com/pengbo-web/eap-gateway-demo)后,网关向交换机 `eap.events` 发布统一事件,
   本系统消费队列 `mes.integration`(routing key `eap.#`),自动完成报工与报警联动;
 - **HTTP 通道**:`POST /mes/eap/event`,请求头 `X-EAP-Key: eap-demo-key`(演示密钥,生产应改配置),
   与 MQ 通道互为备份;
@@ -80,8 +80,9 @@ pnpm dev
 
 ## 三、验收与回归
 
-全部验收脚本与数据夹具位于 EAP-MES 仓库 `eap-gateway/` 目录(`verify_mrp/fifo/oee/trace/dispatch/t6` 与
-`fixtures/*.sql`),一键回归 `verify_e2e.py` 覆盖本项目 5 模块与网关全链路;脚本以 admin 身份走真实接口断言数据库落库结果。
+本项目(MES 侧)验收脚本与数据夹具位于本仓库 `eap-gateway/` 目录(`verify_mrp/fifo/oee/trace/dispatch/t6` 与
+`fixtures/*.sql`);网关侧验收(t1~t5b)、设备模拟器与覆盖两项目的一键回归 `verify_e2e.py` 位于
+[eap-gateway-demo](https://github.com/pengbo-web/eap-gateway-demo) 仓库。脚本以 admin 身份走真实接口断言数据库落库结果。
 
 ## 四、二开相关文件导览
 
