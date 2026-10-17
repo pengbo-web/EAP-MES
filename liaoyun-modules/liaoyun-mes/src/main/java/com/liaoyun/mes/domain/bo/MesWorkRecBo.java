@@ -1,6 +1,7 @@
 package com.liaoyun.mes.domain.bo;
 
 import com.liaoyun.mes.domain.MesWorkRec;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.liaoyun.common.mybatis.core.domain.BaseEntity;
 import com.liaoyun.common.core.validate.AddGroup;
 import com.liaoyun.common.core.validate.EditGroup;
@@ -73,5 +74,16 @@ public class MesWorkRecBo extends BaseEntity {
     private Integer mustbe;
 
     private Long proid;
+
+    /**
+     * 报工设备编码(EAP快照, 二次开发新增)
+     */
+    private String deviceCode;
+
+    /**
+     * 工艺参数JSON快照(EAP, 二次开发新增; 字段名避让 BaseEntity.params)
+     */
+    @TableField("params")
+    private String eapParams;
 
 }

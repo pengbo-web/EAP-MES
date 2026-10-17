@@ -78,4 +78,15 @@ public class MesWorkRec extends TenantEntity {
 
     private Long proid;
 
+    /**
+     * 报工设备编码(EAP快照, 二次开发新增)
+     */
+    private String deviceCode;
+
+    /**
+     * 工艺参数JSON快照(EAP, 二次开发新增; 字段名避让 BaseEntity.params)
+     */
+    @TableField("params")
+    private String eapParams;
+
 }
